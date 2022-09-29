@@ -1,0 +1,58 @@
+@layout('layout/app')
+@set('title', 'Login')
+@section('body')
+<section class="h-screen container">
+  <div class="px-0 py-20 mx-auto max-w-7xl sm:px-4">
+    <div
+      class="w-full px-4 pt-5 pb-6 mx-auto mt-4 mb-6 bg-white rounded-none sm:rounded-lg sm:w-10/12 md:w-8/12 lg:w-6/12 xl:w-4/12 sm:px-6">
+      {{-- notification --}}
+      @if(flashMessages.has('notification'))
+      <div class="alert alert-success  alert-dismissible fade show flex flex-col" role="alert">
+        <strong>Success !</strong><span>{{(flashMessages.get('notification'))}}</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      @endif
+      {{-- errors --}}
+      @if(flashMessages.has('error'))
+      <div class="alert alert-danger alert-dismissible fade show flex flex-col" role="alert">
+        <strong>Hmmm ...</strong>
+        <span>{{(flashMessages.get('error'))}}</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      @endif
+      <h1 class="mb-4 text-lg font-semibold text-center text-gray-900 ">Log in to your account</h1>
+      <form class="mb-8 space-y-4" action="/login" method="post">
+        {{-- {{ csrfField() }} --}}
+        <label class="block">
+          <span class="block mb-1 text-sm font-medium text-gray-700">Username</span>
+          <input class="form-input {{ (flashMessages.has('errors.username') ? 'border-red-600' : '') }}"
+            value="{{flashMessages.get('username','') ?? ''}}" type="text" name="username" placeholder="john_doe"
+             />
+          @if(flashMessages.has('errors.username'))
+          <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.username')}}</p>
+          @endif
+        </label>
+        <label class="block">
+          <span class="block mb-1 text-sm font-medium text-gray-700">Enter your passcode</span>
+          <input class="form-input {{ (flashMessages.has('errors.passcode') ? 'border-red-600' : '') }}"
+            value="{{flashMessages.get('passcode','') ?? ''}}" type="password" name="passcode"
+            placeholder="Eg 3FrankoGh74744" />
+          @if(flashMessages.has('errors.passcode'))
+          <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.passcode')}}</p>
+          @endif
+        </label>
+        <div class="flex flex-col items-start justify-between sm:items-center sm:flex-row">
+          <label class="flex items-center">
+            <input type="checkbox" name="remember" class="form-checkbox" />
+            <span class="block ml-2 text-xs font-medium text-gray-700 cursor-pointer">Remember me</span>
+          </label>
+        </div>
+        <input type="submit" class="w-full py-3 mt-3 btn btn-primary hover:bg-purple-600" value="Login" />
+      </form>
+    </div>
+    <p class="mb-4 text-xs text-center text-gray-400">
+      <a href="" class="text-gray-600 underline hover:text-purple-600">Reset password</a>
+    </p>
+  </div>
+</section>
+@endsection

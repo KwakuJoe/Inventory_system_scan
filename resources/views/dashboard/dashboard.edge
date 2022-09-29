@@ -1,0 +1,99 @@
+@layout('layout/app')
+@set('title','dashbard')
+
+@section('navbar')
+@include('../layout/partials/nav_bar.edge')
+@endsection
+
+@section('body')
+<section class="container">
+  <div class="row mt-3 justify-content-center">
+    <div class="col-lg-8 bg-white rounded p-4">
+      {{-- title an button --}}
+      <div class="flex flex-row justify-between items-center">
+        {{-- drop down --}}
+        <div x-data="dropdown()">
+          <button class="btn btn-primary" id="open-color-menu-divider" x-spread="trigger">
+            Filter
+            <svg class="dropdown-arrow" :class="{ 'rotate-180': open }" aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="dropdown-list" id="color-menu-divider" x-spread="dropdown" x-cloak>
+            <a href="#" class="dropdown-item">Expiry products</a>
+            <div class="dropdown-divide"></div>
+            <a href="#" class="dropdown-item">Non-expiry products</a>
+          </div>
+        </div>
+        <p class="text-2xl font-semibold">Collections</p>
+
+        {{-- add collection button --}}
+        <div x-data="dialog()">
+          <button class="btn btn-primary" x-spread="trigger">Open Dialog</button>
+          <div class="dialog" x-spread="dialog" x-cloak>
+            <div class="dialog-content">
+              <div class="dialog-header"> kutty-og.png
+                <button type="button" class="btn btn-light btn-sm btn-icon" aria-label="Close" @click="close"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg></button>
+              </div>
+              <div class="flex flex-col px-5 py-3">
+                @include('../components/collection_modal_form.edge')
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{-- table --}}
+      <div class=" flex flex-row mt-3 flex-wrap items-center border-bottom py-3">
+        {{-- icon --}}
+        <div class="flex-none mr-4">
+          <p class="bg-purple-200 p-3 rounded ">
+            <ion-icon name="albums-outline"></ion-icon>
+          </p>
+        </div>
+        {{-- collection title --}}
+        <div class="flex flex-col mr-10 grow">
+          <p class="text-xl font-semibold m-0 p-0">Phones</p>
+          <p class="m-0 p-0">Lorem, ipsum dolor sit d </p>
+        </div>
+
+        {{-- category --}}
+        <div class="bg-blue-200 hidden sm:block rounded p-2 mr-10">
+          <p class="text-sm text-blue-600 font-bold">Non-Expiry</p>
+        </div>
+        <div class="flex flex-col mr-10">
+          <p class="text-xl font-bold m-0 p-0">20</p>
+          <p class="m-0 p-0 text-sm text-slate-400">Items</p>
+        </div>
+        <div class="grow-0 shrink-0 ">
+          <a href="" class="bg-purple-200 p-2 rounded ">
+            <ion-icon name="eye-outline"></ion-icon>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="bg-white rounded p-4">
+        <div class="row">
+          <div class="col-6">
+            <div class="h-40  bg-slate-300">
+              <p>hhhdhd</p>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="h-40  bg-slate-300">
+              <p>hhhdhd</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+@endsection

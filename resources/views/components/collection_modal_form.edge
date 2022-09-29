@@ -1,0 +1,33 @@
+<form class="mb-8 mt-2 space-y-4" action="/" method="POST">
+  <p class="text-2xl font-semibold">Create Collections</p>
+  {{-- {{ csrfField() }} --}}
+  <label class="block">
+    <span class="block mb-1 text-sm font-medium text-gray-700">Collection name</span>
+    <input class="form-input {{ (flashMessages.has('errors.username') ? 'border-red-600' : '') }}"
+      value="{{flashMessages.get('username','') ?? ''}}" type="text" name="username" placeholder="Samsung collection"
+      inputmode="username" />
+    @if(flashMessages.has('errors.username'))
+    <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.username')}}</p>
+    @endif
+  </label>
+  <label class="block">
+    <span class="block mb-1 text-sm font-medium text-gray-700">Summary</span>
+    <input class="form-input {{ (flashMessages.has('errors.pincode') ? 'border-red-600' : '') }}"
+      value="{{flashMessages.get('pincode','') ?? ''}}" type="number" name="pincode" placeholder="Eg. samsung S5, S6 to S7 and more"
+      inputmode="email" />
+    @if(flashMessages.has('errors.pincode'))
+    <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.pincode')}}</p>
+    @endif
+  </label>
+  <label class="block">
+    <span class="block mb-1 text-sm font-medium text-gray-700">Category</span>
+    <select class="form-select" id="color">
+      <option>Red</option>
+      <option>Blue</option>
+    </select>
+    @if(flashMessages.has('errors.brandName'))
+    <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.brandName')}}</p>
+    @endif
+  </label>
+  <input type="submit" class="w-full py-3 mt-3 btn btn-primary hover:bg-purple-600" value="Proceed" />
+</form>

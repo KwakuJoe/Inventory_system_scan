@@ -1,0 +1,105 @@
+<nav class="p-1 bg-white navbar navbar-expand-lg">
+  <div class="container-xxl">
+    <a class="navbar-brand" href="/dashboard/products">Navbar</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="mb-2 navbar-nav mb-lg-0 me-auto">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Dropdown
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="#">Action</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled">Disabled</a>
+        </li>
+      </ul>
+
+
+      {{-- Navbar End --}}
+      <ul class="flex navbar-nav ms-auto me-3">
+        {{-- @if(auth.isLoggedIn) --}}
+        <form>
+          <div class="form-white input-group" style="width: 250px;">
+            <input class="rounded form-input" type="search" placeholder="Search product" required />
+          </div>
+        </form>
+        <li class="nav-item dropdown">
+          <a class="nav-link" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle" width="30"
+              height="30" alt="" loading="lazy" />
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li>
+              <a class="dropdown-item" href="">
+                <span class="icon-text">
+                  <span class="icon">
+                    <ion-icon name="radio-outline"></ion-icon>
+                  </span>
+                  <span>Brand</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="">
+                <span class="icon-text">
+                  <span class="icon">
+                    <ion-icon name="notifications-outline"></ion-icon>
+                  </span>
+                  <span>Subscribes</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="">
+                <span class="icon-text">
+                  <span class="icon">
+                    <ion-icon name="person-outline"></ion-icon>
+                  </span>
+                  <span>Acount</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <form id="logout" action="/logout" method="post">
+                {{-- {{ csrfField() }} --}}
+            <li>
+              <a class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout').submit()">
+                <span class="icon">
+                  <ion-icon name="log-out-outline"></ion-icon>
+                </span>
+                <span>Logout</span>
+                </span>
+              </a>
+            </li>
+            </form>
+        </li>
+      </ul>
+      </li>
+      {{-- @else --}}
+      {{-- @endif --}}
+      </ul>
+    </div>
+  </div>
+</nav>
