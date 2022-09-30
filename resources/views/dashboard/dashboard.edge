@@ -9,6 +9,13 @@
 <section class="container">
   <div class="row mt-3 justify-content-center">
     <div class="col-lg-8 bg-white rounded p-4">
+      {{-- notification --}}
+          @if(flashMessages.has('notification'))
+          <div class="alert alert-success alert-dismissible fade show flex flex-col" role="alert">
+            <strong>Success !</strong><span>{{(flashMessages.get('notification'))}}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          @endif
       {{-- title an button --}}
       <div class="flex flex-row justify-between items-center">
         {{-- drop down --}}
@@ -29,28 +36,33 @@
         </div>
         <p class="text-2xl font-semibold">Collections</p>
 
-        {{-- add collection button --}}
-        <div x-data="dialog()">
-          <button class="btn btn-primary" x-spread="trigger">Open Dialog</button>
-          <div class="dialog" x-spread="dialog" x-cloak>
-            <div class="dialog-content">
-              <div class="dialog-header"> kutty-og.png
-                <button type="button" class="btn btn-light btn-sm btn-icon" aria-label="Close" @click="close"><svg
-                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg></button>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+          Create collection
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+          aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog ">
+            <div class="modal-content">
+              <div class="modal-header border-0">
+                <h5 class="modal-title" id="staticBackdropLabel">Collection</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <div class="flex flex-col px-5 py-3">
+              <div class="modal-body">
                 @include('../components/collection_modal_form.edge')
+              </div>
+              <div class="modal-footer bg-slate-200">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               </div>
             </div>
           </div>
         </div>
       </div>
       {{-- table --}}
-      <div class=" flex flex-row mt-3 flex-wrap items-center border-bottom py-3">
+      @each(collection in collections)
+      <div class="flex flex-row mt-3 flex-wrap items-center border-bottom py-3">
         {{-- icon --}}
         <div class="flex-none mr-4">
           <p class="bg-purple-200 p-3 rounded ">
@@ -59,13 +71,13 @@
         </div>
         {{-- collection title --}}
         <div class="flex flex-col mr-10 grow">
-          <p class="text-xl font-semibold m-0 p-0">Phones</p>
-          <p class="m-0 p-0">Lorem, ipsum dolor sit d </p>
+          <p class="text-xl font-semibold m-0 p-0">{{collection.name}}</p>
+          <p class="m-0 p-0 text-slate-400">{{collection.summary}}</p>
         </div>
 
         {{-- category --}}
-        <div class="bg-blue-200 hidden sm:block rounded p-2 mr-10">
-          <p class="text-sm text-blue-600 font-bold">Non-Expiry</p>
+        <div class="{{collection.category == 'Non-expiry product' ? 'bg-blue-200' : 'bg-orange-200'}} hidden sm:block rounded p-2 mr-10">
+          <p class="text-sm {{collection.category == 'Non-expiry product' ? 'text-blue-600' : 'text-orange-600'}} font-bold">{{collection.category}}</p>
         </div>
         <div class="flex flex-col mr-10">
           <p class="text-xl font-bold m-0 p-0">20</p>
@@ -77,6 +89,7 @@
           </a>
         </div>
       </div>
+      @endeach
     </div>
     <div class="col-lg-4">
       <div class="bg-white rounded p-4">

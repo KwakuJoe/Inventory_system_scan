@@ -24,9 +24,9 @@ export default class CreateCollectionValidator {
    *    ```
    */
   public schema = schema.create({
-    name: schema.string([rules.maxLength(24)]),
-    summary: schema.string([rules.maxLength(16)]),
-    category:schema.string({})
+    name: schema.string([rules.maxLength(40)]),
+    summary: schema.string([rules.maxLength(20)]),
+    category: schema.string({}),
   })
 
   /**
@@ -40,5 +40,9 @@ export default class CreateCollectionValidator {
    * }
    *
    */
-  public messages: CustomMessages = {}
+  public messages: CustomMessages = {
+    'required': 'The {{ field }} is required to create collection',
+    'name.maxLength': 'Characters should not exceed  {{ options.maxLength }} characters',
+    'summary.maxLength': 'Characters should not exceed  {{ options.maxLength }} characters',
+  }
 }

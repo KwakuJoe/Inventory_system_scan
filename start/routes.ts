@@ -28,12 +28,13 @@ Route.group(() => {
 
 }).namespace('App/Controllers/Http/auth')
 
-Route.group(() => {
-  Route.get('/home', 'DashboardController.index')
-}).prefix('dashboard')
-  .namespace('App/Controllers/Http/dashboard')
-
 
 Route.group(() => {
-    Route.resource('/collection','CollectionController').except(['show', 'create'])
-  }).namespace('App/Controllers/Http/collection')
+  Route.get('/dashboard', 'DashboardController.index')
+}).namespace('App/Controllers/Http/dashboard')
+
+Route.group(() => {
+  Route.post('/collections', 'collection/CollectionController.store')
+})
+
+
