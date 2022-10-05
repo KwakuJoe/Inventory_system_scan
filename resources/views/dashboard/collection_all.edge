@@ -1,0 +1,102 @@
+@layout('layout/app')
+@set('title', 'all-collection')
+
+@section('navbar')
+@include('../layout/partials/nav_bar.edge')
+@endsection
+
+@section('body')
+<section class="container">
+  <div class="mt-3 row justify-content-center">
+    <div class="p-4 bg-gray-800 rounded col-lg-10 text-white">
+      {{-- notification --}}
+      {{-- notifiation --}}
+      @if(flashMessages.has('notification'))
+      <div class="text-green-800 bg-green-100 border-1 alert alert-closable" role="alert" x-data="{ open: true }"
+        x-show.transition="open">
+        <ion-icon class="pr-3 text-2xl" name="checkmark-circle-outline"></ion-icon>
+        {{(flashMessages.get('notification'))}}
+        <button class="bg-green-100 border-0 rounded-l-none btn btn-sm alert-close" @click="open = false">
+          <ion-icon class="text-2xl" name="close-outline"></ion-icon>
+        </button>
+      </div>
+      @endif
+      <div class="flex flex-row flex-wrap justify-between gap-x-2 sm:flex-col gap-y-3">
+        <div class="flex">
+          <p class="text-2xl">All</p>
+          <p class="ml-2 text-2xl font-bold">collections</p>
+        </div>
+        <div class="flex flex-row flex-wrap gap-x-2 gap-y-3">
+          {{-- create collection --}}
+          <!-- Button trigger modal add collection -->
+          <button type="button" class="btn btn-primary border-0" data-bs-toggle="modal" data-bs-target="#addCollectionModalForm">
+            Create collection
+          </button>
+          <!-- Modal -->
+          <div class="modal fade" id="addCollectionModalForm" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="addCollectionModalFormLabel" aria-hidden="true">
+            <div class="modal-dialog ">
+              <div class="modal-content">
+                <div class="border-0 modal-header">
+                  <h5 class="modal-title" id="addCollectionModalFormLabel">Collection</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  @include('../components/collection_components/add_collection_modal_form.edge')
+                </div>
+                <div class="modal-footer bg-slate-200">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {{-- search --}}
+          <form action="{{route('search.all', {term:'collection-product-items'})}}">
+            <div class="form-white input-group" style="width: 250px;">
+              <input class="rounded form-input bg-gray-900 text-white border-0" type="search" name="name" placeholder="Search product" required />
+            </div>
+          </form>
+        </div>
+      </div>
+      {{-- product searc list --}}
+      {{-- <p class="mt-3 text-sm text-slate-600">Products search</p>
+      <p class="mt-3 text-sm text-slate-600">Collections search</p> --}}
+      <div class="mt-5 row gy-2">
+        @each(collection in collections)
+        <div class="col-lg-3">
+          <a href="{{route('collection.show', {uuid:collection.uuid})}}">
+            <div
+              class="flex flex-col items-center justify-center p-3 rounded bg-gray-900 hover:text-purple-600">
+              <div class="mb-2 avatar bg-gray-800">
+                <ion-icon name="cube-outline"></ion-icon>
+              </div>
+              <p class="text-base font-bold">{{collection.name}}</p>
+              <p class="text-sm">{{collection.category}} </p>
+            </div>
+          </a>
+          {{-- @each(anchor in posts.getUrlsForRange(1, posts.lastPage))
+          <a href="{{ anchor.url }}">
+            {{ anchor.page }}
+          </a>
+          @endeach --}}
+        </div>
+        @else
+        <div class="flex flex-row items-center justify-center p-3 mt-3 rounded gap-x-2 bg-slate-100">
+          <div class="avatar">
+            <ion-icon name="cube-outline"></ion-icon>
+          </div>
+          <p class="rounded  text-slate-400">No collection added yet</p>
+        </div>
+        @endeach
+        <nav class="mt-4 pagination" role="navigation" aria-label="pagination">
+          @each(anchor in collections.getUrlsForRange(1, collections.lastPage))
+          <a href="{{ anchor.url }}" class="pagination-link bg-gray-900 text-white" aria-label="Page 5" aria-current="page">
+            {{anchor.page}}
+          </a>
+          @endeach
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+@endsection

@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, beforeCreate, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeCreate, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import { uuid } from 'uuidv4'
+import Product from '../Models/Product'
 
 
 export default class Collection extends BaseModel {
@@ -30,4 +31,7 @@ export default class Collection extends BaseModel {
     model.uuid = uuid()
   }
 
+  // define relationship between collection and product 1:M
+  @hasMany(() => Product)
+  public products: HasMany<typeof Product>
 }

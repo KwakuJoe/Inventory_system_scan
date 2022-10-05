@@ -71,6 +71,6 @@ export default class authController {
 
     await auth.login(user!, remember)
     session.flash('notification', `Welcome ${user!.username}`)
-    return response.redirect('/dashboard/home')
+    return response.redirect('/dashboard')
   }
 }

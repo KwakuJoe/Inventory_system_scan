@@ -31,10 +31,24 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get('/dashboard', 'DashboardController.index')
+
 }).namespace('App/Controllers/Http/dashboard')
 
 Route.group(() => {
-  Route.post('/collections', 'collection/CollectionController.store')
+  Route.resource('collections', 'collection/CollectionController').except(['show', 'index'])
+  Route.get('/collection/:uuid', 'collection/CollectionController.showCollection').as('collection.show')
+  Route.get('/collections/all/:page?', 'collection/CollectionController.index').as(
+    'collection.index')
+  Route.post('/collection/update', 'collection/CollectionController.update').as('collection.update')
+  Route.post('/collection/:id', 'collection/CollectionController.destroy')
 })
 
+Route.group(() => {
+  Route.resource('/products', 'product/ProductController').except(['show'])
+})
+
+
+Route.group(() => {
+  Route.get('/search/:term', 'search/SearchController.search').as('search.all')
+})
 

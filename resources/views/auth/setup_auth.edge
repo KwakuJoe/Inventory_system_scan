@@ -3,83 +3,81 @@
 @set('title','setup-auth')
 
 @section('body')
-<section class="h-screen container">
+<section class="container h-screen">
   <div class="row justify-content-center">
-    <div class="col-sm-12 col-md-12 col-lg-8 bg-white rounded mt-10 p-16">
+    <div class="p-16 mt-10 bg-gray-800 text-white rounded col-sm-12 col-md-12 col-lg-8">
       {{-- notification --}}
-      @if(flashMessages.has('notification'))
-      <div class="alert alert-success alert-dismissible fade show flex flex-col" role="alert">
-        <strong>Success !</strong><span>{{(flashMessages.get('notification'))}}</span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      @if(flashMessages.get('notification'))
+      <div class="text-green-800 bg-green-100 border-1 alert alert-closable" role="alert" x-data="{ open: true }"
+        x-show.transition="open">
+        <ion-icon class="pr-3 text-2xl" name="checkmark-circle-outline"></ion-icon>
+        {{(flashMessages.get('notification'))}}
+        <button class="bg-green-100 border-0 rounded-l-none btn btn-sm alert-close" @click="open = false">
+          <ion-icon class="text-2xl" name="close-outline"></ion-icon>
+        </button>
       </div>
       @endif
-      @if(flashMessages.has('error'))
-            <div class="alert alert-danger alert-dismissible fade show flex flex-col" role="alert">
-              <strong>Error !</strong><span>{{(flashMessages.get('error'))}}</span>
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
       <div class="row gy-4 gx-5">
         <div class="col-lg-6">
-          <p class="text-5xl font-medium mt-2">Welcome to Inventory-1</p>
+          <p class="mt-2 text-5xl font-medium">Welcome to Inventory-1</p>
           <p class="mt-3">Fill out the the following information to setup your auth and Inventory Dashboard. Only the
             passcode will be neede for loggin in into your acount.</p>
-          <div class=" flex-col bg-purple-100 p-4 rounded mt-4">
-            <p class="text-purple-600 mb-2"><strong>Username- </strong>to identify the user</p>
-            <p class="text-purple-600 mb-2"><strong>Passcode- </strong>will be used by the user for logging into the
+          <div class="flex-col p-4 mt-4 bg-gray-900 rounded ">
+            <p class="mb-2 text-white"><strong>Username- </strong>to identify the user</p>
+            <p class="mb-2 text-white"><strong>Passcode- </strong>will be used by the user for logging into the
               dashboard. </p>
-            <p class="text-purple-600 mb-2"><strong>Pincode- </strong>is a four digit numbers that you need to generate
+            <p class="mb-2 text-white"><strong>Pincode- </strong>is a four digit numbers that you need to generate
               new password when password is forgotten.
             </p>
-            <p class="text-purple-600"><strong>Brand Name- </strong>will be shop/company identity</p>
+            <p class="text-white"><strong>Brand Name- </strong>will be shop/company identity</p>
             <p></p>
           </div>
         </div>
         <div class="col-lg-6">
-          <p class="text-2xl font-medium my-3">Setup Auth & Brand name</p>
-          <form class="mb-8 mt-2 space-y-4" action="/register" method="POST">
+          <p class="my-3 text-2xl font-medium">Setup Auth & Brand name</p>
+          <form class="mt-2 mb-8 space-y-4" action="/register" method="POST">
             {{-- {{ csrfField() }} --}}
             <label class="block">
-              <span class="block mb-1 text-sm font-medium text-gray-700">Username</span>
-              <input class="form-input {{ (flashMessages.has('errors.username') ? 'border-red-600' : '') }}"
+              <span class="block mb-1 text-sm font-medium">Username</span>
+              <input class="form-input {{ (flashMessages.has('errors.username') ? 'border-red-600' : '') }} bg-gray-900 border-0 text-white"
                 value="{{flashMessages.get('username','') ?? ''}}" type="text" name="username" placeholder="john_doe"
-                inputmode="username"  />
+                inputmode="username" />
               @if(flashMessages.has('errors.username'))
               <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.username')}}</p>
               @endif
             </label>
             <label class="block">
-              <span class="block mb-1 text-sm font-medium text-gray-700">Pincode</span>
-              <input class="form-input {{ (flashMessages.has('errors.pincode') ? 'border-red-600' : '') }}"
+              <span class="block mb-1 text-sm font-medium">Pincode</span>
+              <input class="form-input {{ (flashMessages.has('errors.pincode') ? 'border-red-600' : '') }} bg-gray-900 border-0 text-white"
                 value="{{flashMessages.get('pincode','') ?? ''}}" type="number" name="pincode" placeholder="Eg 8754"
-                inputmode="email"  />
+                inputmode="email" />
               @if(flashMessages.has('errors.pincode'))
               <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.pincode')}}</p>
               @endif
             </label>
             <label class="block">
-              <span class="block mb-1 text-sm font-medium text-gray-700">Brand/Compnay/Shop name</span>
-              <input class="form-input {{ (flashMessages.has('errors.brandName') ? 'border-red-600' : '') }}"
+              <span class="block mb-1 text-sm font-medium ">Brand/Compnay/Shop name</span>
+              <input class="form-input {{ (flashMessages.has('errors.brandName') ? 'border-red-600' : '') }} bg-gray-900 border-0 text-white"
                 value="{{flashMessages.get('brandName','') ?? ''}}" type="text" name="brandName"
-                placeholder="Eg Shopit Company Limited"   />
+                placeholder="Eg Shopit Company Limited" />
               @if(flashMessages.has('errors.brandName'))
               <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.brandName')}}</p>
               @endif
             </label>
             <label class="block">
-              <span class="block mb-1 text-sm font-medium text-gray-700">Enter your passcode</span>
-              <input class="form-input {{ (flashMessages.has('errors.passcode') ? 'border-red-600' : '') }}"
+              <span class="block mb-1 text-sm font-medium ">Enter your passcode</span>
+              <input class="form-input {{ (flashMessages.has('errors.passcode') ? 'border-red-600' : '') }} bg-gray-900 border-0 text-white"
                 value="{{flashMessages.get('passcode','') ?? ''}}" type="password" name="passcode"
-                placeholder="Eg 3FrankoGh74744"  />
+                placeholder="Eg 3FrankoGh74744" />
               @if(flashMessages.has('errors.passcode'))
               <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.passcode')}}</p>
               @endif
             </label>
             <label class="block">
-              <span class="block mb-1 text-sm font-medium text-gray-700">Enter your passcode</span>
-              <input class="form-input {{ (flashMessages.has('errors.passcodeConfirmation') ? 'border-red-600' : '') }}"
+              <span class="block mb-1 text-sm font-medium">Enter your passcode</span>
+              <input class="form-input {{ (flashMessages.has('errors.passcodeConfirmation') ? 'border-red-600' : '') }} bg-gray-900 border-0 text-white"
                 value="{{flashMessages.get('passcodeConfirmation','') ?? ''}}" type="password"
-                name="passcodeConfirmation" placeholder="Eg 3FrankoGh74744"   />
+                name="passcodeConfirmation" placeholder="Eg 3FrankoGh74744" />
               @if(flashMessages.has('errors.passcodeConfirmation'))
               <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.passcodeConfirmation')}}</p>
               @endif

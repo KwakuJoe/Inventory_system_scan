@@ -1,0 +1,112 @@
+@layout('layout/app')
+@set('title', 'all-products')
+
+@section('navbar')
+@include('../layout/partials/nav_bar.edge')
+@endsection
+
+@section('body')
+<section class="container">
+  <div class="mt-3 row justify-content-center">
+    <div class="p-4 bg-gray-800 rounded col-lg-8 text-white">
+      {{-- notification --}}
+      {{-- notifiation --}}
+      @if(flashMessages.has('notification'))
+      <div class="text-green-800 bg-green-100 border-1 alert alert-closable" role="alert" x-data="{ open: true }"
+        x-show.transition="open">
+        <ion-icon class="pr-3 text-2xl" name="checkmark-circle-outline"></ion-icon>
+        {{(flashMessages.get('notification'))}}
+        <button class="bg-green-100 border-0 rounded-l-none btn btn-sm alert-close" @click="open = false">
+          <ion-icon class="text-2xl" name="close-outline"></ion-icon>
+        </button>
+      </div>
+      @endif
+      <div class="flex flex-row flex-wrap justify-between gap-x-2 sm:flex-col gap-y-3">
+        <div class="flex">
+          <p class="text-2xl">All</p>
+          <p class="ml-2 text-2xl font-bold">products</p>
+        </div>
+        <div class="flex flex-row flex-wrap gap-x-2 gap-y-3">
+          {{-- create collection --}}
+          <!-- Button trigger modal add collection -->
+          <button type="button" class="btn btn-primary border-0" data-bs-toggle="modal"
+            data-bs-target="#addCollectionModalForm">
+            Create product
+          </button>
+          <!-- Modal -->
+          <div class="modal fade" id="addCollectionModalForm" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="addCollectionModalFormLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content bg-gray-900">
+                <div class="border-0 modal-header">
+                  <h5 class="modal-title" id="addCollectionModalFormLabel">Collection</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  @include('../components/product_component/add_product_modal_form.edge')
+                </div>
+                <div class="modal-footer bg-gray-800 border-0">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {{-- search --}}
+          <form action="{{route('search.all', {term:'collection-product-items'})}}">
+            <div class="form-white input-group" style="width: 250px;">
+              <input class="rounded form-input bg-gray-900 text-white border-0" type="search" name="name"
+                placeholder="Search product" required />
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="mt-5 row gy-2">
+        @each(products in product)
+        <div class="flex flex-row flex-wrap items-center py-3 mt-3 bg-gray-900 rounded">
+          {{-- image --}}
+          <div class="flex-none mr-4">
+            <div class="h-20 w-20 bg-gray-800 rounded">
+              <p>I</p>
+            </div>
+          </div>
+          {{-- collection title --}}
+          <div class="flex mr-10 sm:basis-3/12 grow">
+            <p class="p-0 m-0  text-lg font-semibold">{{ truncate(product.name, 15) }}</p>
+          </div>
+          {{-- collection price --}}
+          <div class="hidden sm:block rounded p-2 mr-10">
+            <p class="p-0 m-0 text-2xl font-bold">${{ product.price }}</p>
+          </div>
+          {{--  Items  --}}
+          <div class="flex flex-col mr-10 basis-1/12">
+            <p class="p-0 m-0 text-xl font-bold">20</p>
+            <p class="p-0 m-0 text-sm text-slate-400">Items</p>
+          </div>
+          {{--  Icon  --}}
+          <div class="grow-0 shrink-0 ">
+            <a href="" class="p-1 bg-gray-900 rounded ">
+              <ion-icon name="eye-outline"></ion-icon>
+            </a>
+          </div>
+        </div>
+        @else
+        <div class="flex flex-row items-center justify-center p-3 mt-3 rounded gap-x-2 bg-gray-900">
+          <div class="avatar">
+            <ion-icon name="cube-outline"></ion-icon>
+          </div>
+          <p class="rounded  p-0 m-0 text-sm font-bold">No collection added yet</p>
+        </div>
+        @endeach
+        <nav class="mt-4 pagination" role="navigation" aria-label="pagination">
+          @each(anchor in products.getUrlsForRange(1, products.lastPage))
+          <a href="{{ anchor.url }}" class="pagination-link bg-gray-900 text-white" aria-label="Page 5"
+            aria-current="page">
+            {{anchor.page}}
+          </a>
+          @endeach
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+@endsection

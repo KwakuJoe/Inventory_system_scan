@@ -2,8 +2,8 @@
   <p class="text-2xl font-semibold">Create Collections</p>
   {{-- {{ csrfField() }} --}}
   <label class="block">
-    <span class="block mb-1 text-sm font-medium text-gray-700">Collection name</span>
-    <input class="form-input {{ (flashMessages.has('errors.name') ? 'border-red-600' : '') }}"
+    <span class="block mb-1 text-sm font-medium text-white">Collection name</span>
+    <input class="form-input {{ (flashMessages.has('errors.name') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
       value="{{flashMessages.get('name','') ?? ''}}" type="text" name="name" placeholder="Samsung collection"
       inputmode="name" required/>
     @if(flashMessages.has('errors.name'))
@@ -11,8 +11,8 @@
     @endif
   </label>
   <label class="block">
-    <span class="block mb-1 text-sm font-medium text-gray-700">Summary</span>
-    <input class="form-input {{ (flashMessages.has('errors.summary') ? 'border-red-600' : '') }}"
+    <span class="block mb-1 text-sm font-medium text-white">Summary</span>
+    <input class="form-input {{ (flashMessages.has('errors.summary') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
       value="{{flashMessages.get('summary','') ?? ''}}" type="text" name="summary"
       placeholder="Eg. samsung S5, S6 to S7 and more" inputmode="email" required/>
     @if(flashMessages.has('errors.summary'))
@@ -20,8 +20,8 @@
     @endif
   </label>
   <label class="block">
-    <span class="block mb-1 text-sm font-medium text-gray-700">Category</span>
-    <select class="form-select" name="category">
+    <span class="block mb-1 text-sm font-medium text-white">Category</span>
+    <select class="form-select bg-gray-800 border-0 text-white" name="category">
       <option>Non-expiry product</option>
       <option>Expiry product</option>
     </select>
@@ -29,5 +29,5 @@
     <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.category')}}</p>
     @endif
   </label>
-  <input type="submit" class="w-full py-3 mt-3 btn btn-primary hover:bg-purple-600" value="Create collection" />
+  <input type="submit" class="w-full py-3 mt-3 btn btn-primary hover:bg-purple-600 border-0" value="Create collection" />
 </form>

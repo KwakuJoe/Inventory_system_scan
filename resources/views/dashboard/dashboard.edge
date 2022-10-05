@@ -7,101 +7,202 @@
 
 @section('body')
 <section class="container">
-  <div class="row mt-3 justify-content-center">
-    <div class="col-lg-8 bg-white rounded p-4">
-      {{-- notification --}}
-          @if(flashMessages.has('notification'))
-          <div class="alert alert-success alert-dismissible fade show flex flex-col" role="alert">
-            <strong>Success !</strong><span>{{(flashMessages.get('notification'))}}</span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-          @endif
-      {{-- title an button --}}
-      <div class="flex flex-row justify-between items-center">
-        {{-- drop down --}}
-        <div x-data="dropdown()">
-          <button class="btn btn-primary" id="open-color-menu-divider" x-spread="trigger">
-            Filter
-            <svg class="dropdown-arrow" :class="{ 'rotate-180': open }" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </button>
-          <div class="dropdown-list" id="color-menu-divider" x-spread="dropdown" x-cloak>
-            <a href="#" class="dropdown-item">Expiry products</a>
-            <div class="dropdown-divide"></div>
-            <a href="#" class="dropdown-item">Non-expiry products</a>
-          </div>
-        </div>
-        <p class="text-2xl font-semibold">Collections</p>
-
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-          Create collection
+  <div class="mt-3 row justify-content-center gy-3">
+    <div class="col-lg-8">
+      {{-- notifiation --}}
+      @if(flashMessages.has('notification'))
+      <div class="text-green-800 bg-green-100 border-1 alert alert-closable" role="alert" x-data="{ open: true }"
+        x-show.transition="open">
+        <ion-icon class="pr-3 text-2xl" name="checkmark-circle-outline"></ion-icon>
+        {{(flashMessages.get('notification'))}}
+        <button class="bg-green-100 border-0 rounded-l-none btn btn-sm alert-close" @click="open = false">
+          <ion-icon class="text-2xl" name="close-outline"></ion-icon>
         </button>
-
-        <!-- Modal -->
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-          aria-labelledby="staticBackdropLabel" aria-hidden="true">
-          <div class="modal-dialog ">
-            <div class="modal-content">
-              <div class="modal-header border-0">
-                <h5 class="modal-title" id="staticBackdropLabel">Collection</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                @include('../components/collection_modal_form.edge')
-              </div>
-              <div class="modal-footer bg-slate-200">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+      @endif
+      <div class="p-4 bg-gray-800 rounded row text-white">
+        <div class="col">
+          {{-- collection starts --}}
+          <div>
+            <div class="flex flex-row flex-wrap items-center justify-between gap-y-3">
+              {{-- collection title --}}
+              <p class="text-2xl font-semibold">Recent Collections</p>
+              {{-- drop down --}}
+              <div class="flex flex-row gap-x-2">
+                {{-- create button --}}
+                <!-- Button trigger modal add collection -->
+                <button type="button" class="btn btn-primary border-0" data-bs-toggle="modal"
+                  data-bs-target="#addCollectionModalForm">
+                  Create collection
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="addCollectionModalForm" data-bs-backdrop="static" data-bs-keyboard="false"
+                  tabindex="-1" aria-labelledby="addCollectionModalFormLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content bg-gray-900">
+                      <div class="border-0 modal-header">
+                        <h5 class="modal-title" id="addCollectionModalFormLabel">Collection</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        @include('../components/collection_components/add_collection_modal_form.edge')
+                      </div>
+                      <div class="modal-footer bg-gray-800 border-0">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Button trigger modal -->
+                <a href="{{route('collection.index')}}" type="button" class="btn btn-primary border-0">
+                  <div class="flex flex-row items-center justify-between">
+                    <ion-icon name="eye-outline"></ion-icon>
+                    <p class="ms-2">view all</p>
+                  </div>
+                </a>
               </div>
             </div>
           </div>
+          {{-- table --}}
+          @each(collection in collections)
+          <div class="flex flex-row flex-wrap items-center py-1 mt-3">
+            {{-- icon --}}
+            <div class="flex-none mr-4">
+              <ion-icon class="p-2 bg-gray-900 rounded" name="albums-outline"></ion-icon>
+            </div>
+            {{-- collection title --}}
+            <div class="flex mr-10 ">
+              <p class="p-0 m-0 text-base font-semibold">{{ truncate(collection.name, 15) }}</p>
+            </div>
+            {{-- collection summary --}}
+            <div class="flex flex-row sm:basis-3/12 grow ">
+              <p class="p-0 m-0 text-slate-400 hidden sm:block"> {{ truncate(collection.summary, 25) }} </p>
+            </div>
+            {{-- category --}}
+            <div class="hidden sm:block rounded p-2 mr-10">
+              <p class="text-sm text-white">
+                {{collection.category}}</p>
+            </div>
+            <div class="flex flex-col mr-10 basis-1/12">
+              <p class="p-0 m-0 text-xl font-bold">20</p>
+              <p class="p-0 m-0 text-sm text-slate-400">Items</p>
+            </div>
+            <div class="grow-0 shrink-0 ">
+              <a href="{{route('collection.show', {uuid:collection.uuid})}}" class="p-1 bg-gray-900 rounded ">
+                <ion-icon name="eye-outline"></ion-icon>
+              </a>
+            </div>
+          </div>
+          @else
+          <div class="flex flex-row items-center justify-center p-3 mt-3 rounded gap-x-2 bg-slate-100">
+            <div class="avatar">
+              <ion-icon name="albums-outline"></ion-icon>
+            </div>
+            <p class="rounded lg:w-1/3 text-slate-400">No Collection created yet</p>
+          </div>
+          @endeach
         </div>
       </div>
-      {{-- table --}}
-      @each(collection in collections)
-      <div class="flex flex-row mt-3 flex-wrap items-center border-bottom py-3">
-        {{-- icon --}}
-        <div class="flex-none mr-4">
-          <p class="bg-purple-200 p-3 rounded ">
-            <ion-icon name="albums-outline"></ion-icon>
-          </p>
-        </div>
-        {{-- collection title --}}
-        <div class="flex flex-col mr-10 grow">
-          <p class="text-xl font-semibold m-0 p-0">{{collection.name}}</p>
-          <p class="m-0 p-0 text-slate-400">{{collection.summary}}</p>
-        </div>
-
-        {{-- category --}}
-        <div class="{{collection.category == 'Non-expiry product' ? 'bg-blue-200' : 'bg-orange-200'}} hidden sm:block rounded p-2 mr-10">
-          <p class="text-sm {{collection.category == 'Non-expiry product' ? 'text-blue-600' : 'text-orange-600'}} font-bold">{{collection.category}}</p>
-        </div>
-        <div class="flex flex-col mr-10">
-          <p class="text-xl font-bold m-0 p-0">20</p>
-          <p class="m-0 p-0 text-sm text-slate-400">Items</p>
-        </div>
-        <div class="grow-0 shrink-0 ">
-          <a href="" class="bg-purple-200 p-2 rounded ">
-            <ion-icon name="eye-outline"></ion-icon>
-          </a>
+      <div class="p-4 mt-3 bg-gray-800 rounded row text-white">
+        <div class="col">
+          {{-- Recent Products starts --}}
+          <div>
+            <div class="flex flex-row flex-wrap items-center justify-between mb-4">
+              {{-- Recent title --}}
+              <p class="text-2xl font-semibold">Recent Products</p>
+              <div class="flex flex-row">
+                <!-- View all button -->
+                <a href="{{route('products.index')}}" class="btn btn-primary border-0">
+                  <div class="flex flex-row items-center justify-between">
+                    <ion-icon name="eye-outline"></ion-icon>
+                    <p class="ms-2">view all</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+          {{-- table --}}
+          @each(product in products)
+          <div class="flex flex-row flex-wrap items-center py-1 mt-3">
+            {{-- icon --}}
+            <div class="flex-none mr-4">
+              <ion-icon class="p-2 bg-gray-900 rounded" name="albums-outline"></ion-icon>
+            </div>
+            {{-- collection title --}}
+            <div class="flex mr-10 ">
+              <p class="p-0 m-0 text-base font-semibold">{{ truncate(collection.name, 15) }}</p>
+            </div>
+            {{-- collection summary --}}
+            <div class="flex flex-row sm:basis-3/12 grow ">
+              <p class="p-0 m-0 text-slate-400 hidden sm:block"> {{ truncate(collection.summary, 10) }} </p>
+            </div>
+            {{-- category --}}
+            <div class="hidden sm:block rounded p-2 mr-10">
+              <p class="text-sm {{collection.category == 'Non-expiry product' ? 'text-blue-600' : 'text-orange-600'}}">
+                {{collection.category}}</p>
+            </div>
+            <div class="flex flex-col mr-10 basis-1/12">
+              <p class="p-0 m-0 text-xl font-bold">20</p>
+              <p class="p-0 m-0 text-sm text-slate-400">Items</p>
+            </div>
+            <div class="grow-0 shrink-0 ">
+              <a href="{{route('collection.show', {uuid:collection.uuid})}}" class="p-2 bg-purple-200 rounded ">
+                <ion-icon name="eye-outline"></ion-icon>
+              </a>
+            </div>
+          </div>
+          @else
+          <div class="flex flex-row items-center justify-center p-3 mt-3 rounded gap-x-2 bg-gray-900">
+            <div class="avatar bg-gray-800">
+              <ion-icon name="cube-outline"></ion-icon>
+            </div>
+            <p class="rounded lg:w-1/3 text-slate-400">No product added yet</p>
+          </div>
+          @endeach
         </div>
       </div>
-      @endeach
     </div>
     <div class="col-lg-4">
-      <div class="bg-white rounded p-4">
+      <div class="p-4 bg-gray-800 rounded text-white">
+        <p class="mb-3 text-2xl font-semibold">Overview</p>
         <div class="row">
           <div class="col-6">
-            <div class="h-40  bg-slate-300">
-              <p>hhhdhd</p>
+            <div class="flex flex-row justify-evenly">
+              <ion-icon class="p-3 text-2xl text-orange-500 bg-orange-100 rounded" name="cube-outline"></ion-icon>
+              <div class="flex flex-col justify-center">
+                <p class="p-0 m-0 text-2xl font-bold">{{collectionCount[0].total}}</p>
+                <p class="p-0 m-0 text-sm text-slate-400">Total collections</p>
+              </div>
             </div>
           </div>
           <div class="col-6">
-            <div class="h-40  bg-slate-300">
-              <p>hhhdhd</p>
+            <div class="flex flex-row justify-evenly">
+              <ion-icon class="p-3 text-2xl text-purple-500 bg-purple-100 rounded" name="cube-outline"></ion-icon>
+              <div class="flex flex-col justify-center">
+                <p class="p-0 m-0 text-2xl font-bold">200</p>
+                <p class="p-0 m-0 text-sm text-slate-400">Total items Stock</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 row">
+          <p class="mb-3 text-sm font-semibold text-slate-400">Item Category</p>
+          <div class="col-6">
+            <div class="flex flex-row justify-evenly">
+              <ion-icon class="p-3 text-2xl text-green-500 bg-green-100 rounded" name="cube-outline"></ion-icon>
+              <div class="flex flex-col justify-center">
+                <p class="p-0 m-0 text-2xl font-bold">200</p>
+                <p class="p-0 m-0 text-sm text-slate-400">Expiry products</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="flex flex-row justify-evenly">
+              <ion-icon class="p-3 text-2xl text-blue-500 bg-blue-100 rounded" name="cube-outline"></ion-icon>
+              <div class="flex flex-col justify-center">
+                <p class="p-0 m-0 text-2xl font-bold">200</p>
+                <p class="p-0 m-0 text-sm text-slate-400">Non-expiry</p>
+              </div>
             </div>
           </div>
         </div>

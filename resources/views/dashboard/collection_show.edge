@@ -1,0 +1,253 @@
+@layout('layout/app')
+@set('title','collection_show')
+
+@section('navbar')
+@include('../layout/partials/nav_bar.edge')
+@endsection
+
+@section('body')
+<section class="container">
+  <div class="mt-3 row justify-content-start gy-3">
+    <div class="p-4 bg-white rounded col-lg-8">
+      {{-- notification --}}
+      @if(flashMessages.has('notification'))
+      <div class="text-green-800 bg-green-100 border-1 alert alert-closable" role="alert" x-data="{ open: true }"
+        x-show.transition="open">
+        <ion-icon class="pr-3 text-2xl" name="checkmark-circle-outline"></ion-icon>
+        {{(flashMessages.get('notification'))}}
+        <button class="bg-green-100 border-0 rounded-l-none btn btn-sm alert-close" @click="open = false">
+          <ion-icon class="text-2xl" name="close-outline"></ion-icon>
+        </button>
+      </div>
+      @endif
+      {{-- table header buttons --}}
+      <div>
+        <div class="flex flex-row flex-wrap items-center justify-between mb-4">
+          <div class="flex flex-row items-end mr-10 gap-x-2">
+            <p class="p-0 m-0 text-2xl font-bold">{{collection.name}}</p>
+            <p class="p-0 m-0 text-sm text-slate-400">Collection</p>
+          </div>
+          <form action="{{route('search.all', {term:'collection-product-items'})}}">
+            <div class="form-white input-group" style="width: 250px;">
+              <input class="rounded form-input" type="search" name="name" placeholder="Search product" required />
+            </div>
+          </form>
+        </div>
+      </div>
+      {{-- table --}}
+      @each(product in products)
+      <div class="flex flex-row flex-wrap items-center py-1 mt-1 border-bottom gap-y-4">
+        {{-- icon --}}
+        <div class="flex-none mr-4">
+          <ion-icon class="p-2 bg-purple-200 rounded" name="cube-outline"></ion-icon>
+        </div>
+        {{-- collection title --}}
+        <div class="flex mr-10 lg: basis-3/12 grow">
+          <p class="p-0 m-0 text-base font-semibold">{{product.name}}</p>
+          {{-- <p class="p-0 m-0 text-slate-400">{{collection.summary}}</p> --}}
+        </div>
+
+        {{-- price --}}
+        <div class="flex flex-col mr-10 basis-1/12">
+          <p class="p-0 m-0 text-base font-bold text-green-700 ">${{product.price}}.00</p>
+          <p></p>
+        </div>
+        {{-- stock --}}
+        <div class="flex flex-row items-center mr-10 basis-2/12 gap-x-2">
+          <p class="p-0 m-0 text-xl font-bold">20</p>
+          <p class="p-0 m-0 text-sm text-slate-400">Available Stock</p>
+        </div>
+        <div class="grow-0 shrink-0 ">
+          <a href="" class="p-2 bg-purple-200 rounded ">
+            <ion-icon name="eye-outline"></ion-icon>
+          </a>
+        </div>
+      </div>
+      @else
+      <div class="flex flex-row items-center justify-center p-3 mt-3 rounded gap-x-2 bg-slate-100">
+        <div class="avatar">
+          <ion-icon name="cube-outline"></ion-icon>
+        </div>
+        <p class="rounded lg:w-1/3 text-slate-400">No product added yet</p>
+      </div>
+      @endeach
+    </div>
+
+
+    {{-- side menu and overview --}}
+    <div class="col-lg-4">
+      <div class="p-4 bg-white rounded">
+        <p class="mb-3 text-2xl font-semibold">{{collection.name}}</p>
+        <p class="text-slate-400">{{collection.summary}}</p>
+        {{-- overview --}}
+        <div class="mt-4 row">
+          <p class="mb-3 text-sm font-semibold text-slate-400">Collection Overview</p>
+          <div class="col-6">
+            <div class="flex flex-row justify-evenly">
+              <ion-icon class="p-3 text-2xl text-blue-500 bg-blue-100 rounded" name="cube-outline"></ion-icon>
+              <div class="flex flex-col justify-center">
+                <p class="p-0 m-0 text-2xl font-bold">20</p>
+                <p class="p-0 m-0 text-sm text-slate-400">Total products</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="flex flex-row justify-evenly">
+              <ion-icon class="p-3 text-2xl text-orange-500 bg-orange-100 rounded" name="cube-outline"></ion-icon>
+              <div class="flex flex-col justify-center">
+                <p class="p-0 m-0 text-2xl font-bold">200</p>
+                <p class="p-0 m-0 text-sm text-slate-400">Total items</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="{{collection.category == 'Non-expiry product' ? 'bg-blue-200' : 'bg-orange-200'}} hidden sm:block rounded p-2 mx-3 my-3">
+          <p
+            class="text-sm {{collection.category == 'Non-expiry product' ? 'text-blue-600' : 'text-orange-600'}} font-bold">
+            {{collection.category}}</p>
+        </div>
+        {{-- forms to add product --}}
+        <div class="p-3 my-3 mt-5 rounded bg-slate-50">
+          <form class="px-2 mt-2 mb-8 space-y-4" action="/products" method="POST">
+            <p class="text-2xl font-semibold">Add Product</p>
+            {{-- {{ csrfField() }} --}}
+            <label class="block">
+              <input class="hidden form-input" name="collectionId" value="{{collection.id}}">
+              <span class="block mb-1 text-sm font-medium text-gray-700">Product name</span>
+              <input class="form-input {{ (flashMessages.has('errors.name') ? 'border-red-600' : '') }}"
+                value="{{flashMessages.get('name','') ?? ''}}" type="text" name="name" placeholder="Samsung collection"
+                inputmode="name" required />
+              @if(flashMessages.has('errors.name'))
+              <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.name')}}</p>
+              @endif
+            </label>
+            <label class="block">
+              <span class="block mb-1 text-sm font-medium text-gray-700">Price</span>
+              <input class="form-input {{ (flashMessages.has('errors.price') ? 'border-red-600' : '') }}"
+                value="{{flashMessages.get('price','') ?? ''}}" type="number" name="price"
+                placeholder="Eg. samsung S5, S6 to S7 and more" inputmode="email" required />
+              @if(flashMessages.has('errors.price'))
+              <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.price')}}</p>
+              @endif
+            </label>
+            <input type="submit" class="w-full py-2 mt-3 btn btn-primary hover:bg-purple-600"
+              value="Create collection" />
+          </form>
+        </div>
+        {{-- opration --}}
+        <p class="mt-3 mb-3 text-sm font-semibold text-slate-400">Actions</p>
+
+        <div class="flex flex-col p-3 bg-purple-200 rounded gap-y-2">
+          {{-- edit button --}}
+          <div>
+            <!-- Button trigger modal update collection -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+              data-bs-target="#addCollectionModalForm">
+              Update collection
+            </button>
+            <!-- Modal -->
+            <div class="modal fade" id="addCollectionModalForm" data-bs-backdrop="static" data-bs-keyboard="false"
+              tabindex="-1" aria-labelledby="addCollectionModalFormLabel" aria-hidden="true">
+              <div class="modal-dialog ">
+                <div class="modal-content">
+                  <div class="border-0 modal-header">
+                    <h5 class="modal-title" id="addCollectionModalFormLabel">Collection</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    {{-- forms for updating ollection --}}
+                    <form class="px-2 mt-2 mb-8 space-y-4" action="{{ route('collection.update') + '?_method=PUT'}}"
+                      method="POST">
+                      <p class="text-2xl font-semibold">Update Collections</p>
+                      {{-- hidden input for holding the uuid --}}
+                      <input class="hidden form-input" type="number" name="id" value="{{collection.id}}">
+                      {{-- {{ csrfField() }} --}}
+                      <label class="block">
+                        <span class="block mb-1 text-sm font-medium text-gray-700">Collection name</span>
+                        <input class="form-input {{ (flashMessages.has('errors.name') ? 'border-red-600' : '') }}"
+                          value="{{collection.name}}" type="text" name="name" placeholder="Samsung collection"
+                          inputmode="name" required />
+                        @if(flashMessages.has('errors.name'))
+                        <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.name')}}</p>
+                        @endif
+                      </label>
+                      <label class="block">
+                        <span class="block mb-1 text-sm font-medium text-gray-700">Summary</span>
+                        <input class="form-input {{ (flashMessages.has('errors.summary') ? 'border-red-600' : '') }}"
+                          value="{{collection.summary}}" type="text" name="summary"
+                          placeholder="Eg. samsung S5, S6 to S7 and more" inputmode="email" required />
+                        @if(flashMessages.has('errors.summary'))
+                        <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.summary')}}</p>
+                        @endif
+                      </label>
+                      <label class="block">
+                        <span class="block mb-1 text-sm font-medium text-gray-700">Category</span>
+                        <select class="form-select" name="category">
+                          <option>Non-expiry product</option>
+                          <option>Expiry product</option>
+                        </select>
+                        @if(flashMessages.has('errors.category'))
+                        <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.category')}}</p>
+                        @endif
+                      </label>
+                      <input type="submit" class="w-full py-3 mt-3 btn btn-primary hover:bg-purple-600"
+                        value="Create collection" />
+                    </form>
+                  </div>
+                  <div class="modal-footer bg-slate-200">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="mx-2 text-purple-600">Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+            cum?</p>
+        </div>
+        <div class="flex flex-col p-3 mt-2 bg-red-200 rounded gap-y-2">
+          {{-- edit button --}}
+          <div>
+            <div x-data="dialog()">
+              <button type="button" class="bg-red-600 border-0 btn btn-danger" x-spread="trigger">
+                <div class="flex flex-row items-center justify-between">
+                  <ion-icon class="text-white" name="trash-outline"></ion-icon>
+                  <p class="text-white ms-2">Delete Collection</p>
+                </div>
+              </button>
+              <div class="dialog dialog-sm" x-spread="dialog" x-cloak>
+                <div class="dialog-content">
+                  <div class="font-bold dialog-header ">Drop Collection
+                    <button type="button" class="btn btn-light btn-sm btn-icon" aria-label="Close" @click="close">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg></button>
+                  </div>
+                  <div class="dialog-body">Are you sure you want to permanently remove this collection. Note that
+                    removing this collection would also permanently remove all it products. Do you wish to proceed?
+                  </div>
+                  <div class="dialog-footer">
+                    <button type="button" class="btn btn-light" @click="close">Close</button>
+                    <form action="{{`/collection/${collection.id}?_method=DELETE`}}" method="POST">
+                      <button type="submit" class="ml-3 btn btn-danger">Drop collection</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <p class="mx-2 text-red-600">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolorum eius,
+            assumenda
+            suscipit consectetur reprehenderit
+            cum?</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+@endsection
