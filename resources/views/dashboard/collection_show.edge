@@ -8,13 +8,24 @@
 @section('body')
 <section class="container">
   <div class="mt-3 row justify-content-start gy-3">
-    <div class="p-4 bg-white rounded col-lg-8">
-      {{-- notification --}}
+    <div class="p-4 bg-gray-800 text-white rounded col-lg-8">
+      {{-- success notification --}}
       @if(flashMessages.has('notification'))
       <div class="text-green-800 bg-green-100 border-1 alert alert-closable" role="alert" x-data="{ open: true }"
         x-show.transition="open">
         <ion-icon class="pr-3 text-2xl" name="checkmark-circle-outline"></ion-icon>
         {{(flashMessages.get('notification'))}}
+        <button class="bg-green-100 border-0 rounded-l-none btn btn-sm alert-close" @click="open = false">
+          <ion-icon class="text-2xl" name="close-outline"></ion-icon>
+        </button>
+      </div>
+      @endif
+      {{-- error notification --}}
+      @if(flashMessages.has('error'))
+      <div class="text-red-800 bg-red-100 border-1 alert alert-closable" role="alert" x-data="{ open: true }"
+        x-show.transition="open">
+        <ion-icon class="pr-3 text-2xl" name="checkmark-circle-outline"></ion-icon>
+        {{(flashMessages.get('error'))}}
         <button class="bg-green-100 border-0 rounded-l-none btn btn-sm alert-close" @click="open = false">
           <ion-icon class="text-2xl" name="close-outline"></ion-icon>
         </button>
@@ -29,17 +40,37 @@
           </div>
           <form action="{{route('search.all', {term:'collection-product-items'})}}">
             <div class="form-white input-group" style="width: 250px;">
-              <input class="rounded form-input" type="search" name="name" placeholder="Search product" required />
+              <input class="rounded form-input bg-gray-900 border-0 text-white" type="search" name="name"
+                placeholder="Search product" required />
             </div>
           </form>
         </div>
       </div>
       {{-- table --}}
       @each(product in products)
-      <div class="flex flex-row flex-wrap items-center py-1 mt-1 border-bottom gap-y-4">
+      <div class="flex flex-row flex-wrap items-center p-3 rounded gap-y-4 bg-gray-900">
         {{-- icon --}}
         <div class="flex-none mr-4">
-          <ion-icon class="p-2 bg-purple-200 rounded" name="cube-outline"></ion-icon>
+          {{-- <ion-icon class="p-2 bg-purple-200 rounded" name="cube-outline"></ion-icon> --}}
+          <div x-data="dialog()">
+            <a class="btn border-0" x-spread="trigger">
+              <img class="object-fill h-16 w-16 rounded"
+                src="{{appUrl}}{{product.image}}">
+            </a>
+            <div class="dialog" x-spread="dialog" x-cloak>
+              <div class="dialog-content">
+                <div class="dialog-header bg-gray-900 border-0"> kutty-og.png
+                  <button type="button" class="btn btn-light btn-sm btn-icon" aria-label="Close" @click="close">
+                    <ion-icon name="close-outline"></ion-icon>
+                  </button>
+                </div>
+                <div class="dialog-body bg-gray-900 flex flex-col">
+                  <img class="rounded self-center"
+                    src="{{appUrl}}{{product.image}}">
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         {{-- collection title --}}
         <div class="flex mr-10 lg: basis-3/12 grow">
@@ -58,14 +89,14 @@
           <p class="p-0 m-0 text-sm text-slate-400">Available Stock</p>
         </div>
         <div class="grow-0 shrink-0 ">
-          <a href="" class="p-2 bg-purple-200 rounded ">
+          <a href="{{route('product.show', {uuid:product.uuid})}}" class="p-1 bg-gray-800 rounded ">
             <ion-icon name="eye-outline"></ion-icon>
           </a>
         </div>
       </div>
       @else
-      <div class="flex flex-row items-center justify-center p-3 mt-3 rounded gap-x-2 bg-slate-100">
-        <div class="avatar">
+      <div class="flex flex-row items-center justify-center p-3 mt-3 rounded gap-x-2 bg-gray-900">
+        <div class="avatar bg-gray-800">
           <ion-icon name="cube-outline"></ion-icon>
         </div>
         <p class="rounded lg:w-1/3 text-slate-400">No product added yet</p>
@@ -76,7 +107,7 @@
 
     {{-- side menu and overview --}}
     <div class="col-lg-4">
-      <div class="p-4 bg-white rounded">
+      <div class="p-4 bg-gray-800 text-white rounded">
         <p class="mb-3 text-2xl font-semibold">{{collection.name}}</p>
         <p class="text-slate-400">{{collection.summary}}</p>
         {{-- overview --}}
@@ -101,38 +132,45 @@
             </div>
           </div>
         </div>
-        <div
-          class="{{collection.category == 'Non-expiry product' ? 'bg-blue-200' : 'bg-orange-200'}} hidden sm:block rounded p-2 mx-3 my-3">
-          <p
-            class="text-sm {{collection.category == 'Non-expiry product' ? 'text-blue-600' : 'text-orange-600'}} font-bold">
+        <div class="bg-gray-900 hidden sm:block rounded p-2 mx-3 my-3">
+          <p class="text-sm text-white font-bold">
             {{collection.category}}</p>
         </div>
         {{-- forms to add product --}}
-        <div class="p-3 my-3 mt-5 rounded bg-slate-50">
-          <form class="px-2 mt-2 mb-8 space-y-4" action="/products" method="POST">
-            <p class="text-2xl font-semibold">Add Product</p>
+        <div class="p-3 my-3 mt-5 rounded bg-gray-900">
+          <form class="px-2 mt-2 mb-8 space-y-4" action="/products" method="POST" enctype="multipart/form-data">
+            <p class="text-2xl font-semibold">Create Product</p>
             {{-- {{ csrfField() }} --}}
             <label class="block">
               <input class="hidden form-input" name="collectionId" value="{{collection.id}}">
-              <span class="block mb-1 text-sm font-medium text-gray-700">Product name</span>
-              <input class="form-input {{ (flashMessages.has('errors.name') ? 'border-red-600' : '') }}"
-                value="{{flashMessages.get('name','') ?? ''}}" type="text" name="name" placeholder="Samsung collection"
+              <span class="block mb-1 text-sm font-medium text-white">Product name</span>
+              <input
+                class="form-input {{ (flashMessages.has('errors.name') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
+                value="{{flashMessages.get('name','') ?? ''}}" type="text" name="name" placeholder="Product name"
                 inputmode="name" required />
               @if(flashMessages.has('errors.name'))
               <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.name')}}</p>
               @endif
             </label>
             <label class="block">
-              <span class="block mb-1 text-sm font-medium text-gray-700">Price</span>
-              <input class="form-input {{ (flashMessages.has('errors.price') ? 'border-red-600' : '') }}"
-                value="{{flashMessages.get('price','') ?? ''}}" type="number" name="price"
-                placeholder="Eg. samsung S5, S6 to S7 and more" inputmode="email" required />
+              <span class="block mb-1 text-sm font-medium text-white">Price</span>
+              <input
+                class="form-input {{ (flashMessages.has('errors.price') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
+                value="{{flashMessages.get('price','') ?? ''}}" type="number" name="price" placeholder="$00.00"
+                inputmode="email" required />
               @if(flashMessages.has('errors.price'))
               <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.price')}}</p>
               @endif
             </label>
-            <input type="submit" class="w-full py-2 mt-3 btn btn-primary hover:bg-purple-600"
-              value="Create collection" />
+            <div class="mb-3">
+              <label for="formFile" class="block mb-1 text-sm font-medium text-white">Upload product image</label>
+              <input class="form-control text-white bg-dark border-0" name="image" type="file" id="formFile">
+              @if(flashMessages.has('errors.image'))
+              <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.image')}}</p>
+              @endif
+            </div>
+            <input type="submit" class="w-full py-3 mt-3 btn btn-primary hover:bg-purple-600 border-0"
+              value="Create product" />
           </form>
         </div>
         {{-- opration --}}
@@ -219,8 +257,7 @@
                 <div class="dialog-content">
                   <div class="font-bold dialog-header ">Drop Collection
                     <button type="button" class="btn btn-light btn-sm btn-icon" aria-label="Close" @click="close">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>

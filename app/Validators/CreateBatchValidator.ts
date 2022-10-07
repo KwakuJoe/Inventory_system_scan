@@ -1,7 +1,7 @@
-import { schema, rules, CustomMessages } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class CreateProductValidator {
+export default class CreateBatchValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -23,15 +23,7 @@ export default class CreateProductValidator {
    *     ])
    *    ```
    */
-  public schema = schema.create({
-    name: schema.string([rules.maxLength(40)]),
-    price: schema.number(),
-    collectionId: schema.number(),
-    image: schema.file({
-      extnames: ['jpg', 'jpeg', 'png'],
-      size: '2mb',
-    }),
-  })
+  public schema = schema.create({})
 
   /**
    * Custom messages for validation failures. You can make use of dot notation `(.)`
@@ -44,10 +36,5 @@ export default class CreateProductValidator {
    * }
    *
    */
-  public messages: CustomMessages = {
-    'required': 'The {{ field }} is required to create collection',
-    'name.maxLength': 'Characters should not exceed  {{ options.maxLength }} characters',
-    'file.size': 'The file size must be under {{ options.size }}',
-    'file.extname': 'The file must have one of {{ options.extnames }} extension names',
-  }
+  public messages: CustomMessages = {}
 }

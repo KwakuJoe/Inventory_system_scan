@@ -73,4 +73,9 @@ export default class authController {
     session.flash('notification', `Welcome ${user!.username}`)
     return response.redirect('/dashboard')
   }
+
+  public async logout({ auth, response }: HttpContextContract) {
+    await auth.logout()
+    response.redirect('/')
+  }
 }

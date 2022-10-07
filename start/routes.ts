@@ -21,34 +21,44 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
-  Route.get('/', 'authController.showLogin')
-  Route.get('/auth-setup', 'authController.showSetupAuth')
-  Route.post('/register', 'authController.setupAuth')
-  Route.post('/login', 'authController.login')
+  Route.group(() => {
+    Route.get('/', 'authController.showLogin')
+    Route.get('/auth-setup', 'authController.showSetupAuth')
+    Route.post('/register', 'authController.setupAuth')
+    Route.post('/login', 'authController.login')
+  }).middleware('guest')
 
+  Route.post('/logout', 'AuthController.logout')
 }).namespace('App/Controllers/Http/auth')
-
 
 Route.group(() => {
   Route.get('/dashboard', 'DashboardController.index')
-
-}).namespace('App/Controllers/Http/dashboard')
+})
+  .namespace('App/Controllers/Http/dashboard')
+  .middleware('auth')
 
 Route.group(() => {
-  Route.resource('collections', 'collection/CollectionController').except(['show', 'index'])
-  Route.get('/collection/:uuid', 'collection/CollectionController.showCollection').as('collection.show')
+  Route.resource('collections', 'collection/CollectionController').except(['show', 'index', 'update'])
+  Route.get('/collection/:uuid', 'collection/CollectionController.showCollection').as(
+    'collection.show'
+  )
   Route.get('/collections/all/:page?', 'collection/CollectionController.index').as(
-    'collection.index')
+    'collection.index'
+  )
   Route.post('/collection/update', 'collection/CollectionController.update').as('collection.update')
   Route.post('/collection/:id', 'collection/CollectionController.destroy')
-})
+}).middleware('auth')
 
 Route.group(() => {
   Route.resource('/products', 'product/ProductController').except(['show'])
-})
+  Route.get('/product/:uuid', 'product/ProductController.showProduct').as('product.show')
+}).middleware('auth')
 
+Route.group(() => {
+  Route.resource('/batches', 'batch/BatchController').except(['show','index','update','create', 'edit'])
+
+})
 
 Route.group(() => {
   Route.get('/search/:term', 'search/SearchController.search').as('search.all')
 })
-

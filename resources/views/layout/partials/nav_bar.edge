@@ -1,6 +1,6 @@
 <nav class="pt-3 bg-gray-800 navbar navbar-expand-lg ">
   <div class="container">
-    <a class="text-2xl font-bold navbar-brand text-white" href="/dashboard">Username</a>
+    <a class="text-2xl font-bold navbar-brand text-white" href="/dashboard">{{auth.user.brandName}}</a>
     <button class="navbar-toggler text-white border-gray-100" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <ion-icon name="menu-outline" class="border-white"></ion-icon>
@@ -84,15 +84,15 @@
             <li>
               <form id="logout" action="/logout" method="post">
                 {{-- {{ csrfField() }} --}}
-            <li>
-              <a class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout').submit()">
-                <span class="icon">
-                  <ion-icon name="log-out-outline"></ion-icon>
-                </span>
-                <span>Logout</span>
-                </span>
-              </a>
-            </li>
+                <li>
+                  <a class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout').submit()">
+                    <span class="icon">
+                      <ion-icon name="log-out-outline"></ion-icon>
+                    </span>
+                    <span>Logout</span>
+                    </span>
+                  </a>
+                </li>
             </form>
         </li>
       </ul>

@@ -94,8 +94,8 @@
             </div>
           </div>
           @else
-          <div class="flex flex-row items-center justify-center p-3 mt-3 rounded gap-x-2 bg-slate-100">
-            <div class="avatar">
+          <div class="flex flex-row items-center justify-center p-3 mt-3 rounded gap-x-2 bg-gray-900">
+            <div class="avatar bg-gray-800">
               <ion-icon name="albums-outline"></ion-icon>
             </div>
             <p class="rounded lg:w-1/3 text-slate-400">No Collection created yet</p>
@@ -130,25 +130,25 @@
             </div>
             {{-- collection title --}}
             <div class="flex mr-10 ">
-              <p class="p-0 m-0 text-base font-semibold">{{ truncate(collection.name, 15) }}</p>
+              {{--  <p class="p-0 m-0 text-base font-semibold">{{ truncate(collection.name, 15) }}</p>  --}}
             </div>
             {{-- collection summary --}}
             <div class="flex flex-row sm:basis-3/12 grow ">
-              <p class="p-0 m-0 text-slate-400 hidden sm:block"> {{ truncate(collection.summary, 10) }} </p>
+              {{--  <p class="p-0 m-0 text-slate-400 hidden sm:block"> {{ truncate(collection.summary, 10) }} </p>  --}}
             </div>
             {{-- category --}}
             <div class="hidden sm:block rounded p-2 mr-10">
-              <p class="text-sm {{collection.category == 'Non-expiry product' ? 'text-blue-600' : 'text-orange-600'}}">
-                {{collection.category}}</p>
+              {{--  <p class="text-sm {{collection.category == 'Non-expiry product' ? 'text-blue-600' : 'text-orange-600'}}">  --}}
+                {{--  {{collection.category}}</p>  --}}
             </div>
             <div class="flex flex-col mr-10 basis-1/12">
               <p class="p-0 m-0 text-xl font-bold">20</p>
               <p class="p-0 m-0 text-sm text-slate-400">Items</p>
             </div>
             <div class="grow-0 shrink-0 ">
-              <a href="{{route('collection.show', {uuid:collection.uuid})}}" class="p-2 bg-purple-200 rounded ">
+              {{--  <a href="{{route('collection.show', {uuid:collection.uuid})}}" class="p-2 bg-purple-200 rounded ">
                 <ion-icon name="eye-outline"></ion-icon>
-              </a>
+              </a>  --}}
             </div>
           </div>
           @else

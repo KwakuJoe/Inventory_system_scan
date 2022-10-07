@@ -3,7 +3,7 @@ import Collection from 'App/Models/Collection'
 import Product from 'App/Models/Product'
 import CreateCollectionValidator from 'App/Validators/CreateCollectionValidator'
 import UpdateCollectionValidator from 'App/Validators/UpdateCollectionValidator'
-
+import Env from '@ioc:Adonis/Core/Env'
 export default class CollectionController {
 
   public async index({ view, request}: HttpContextContract) {
@@ -12,10 +12,11 @@ export default class CollectionController {
 
     const collections = await Collection.query().paginate(page, limit)
 
+
     // Changes the baseURL for the pagination links
     collections.baseUrl('/collections/all')
 
-    return view.render('dashboard/collection_all', { collections })
+    return view.render('dashboard/collection_all', { collections})
   }
 
   public async store({ request, response, session }: HttpContextContract) {
@@ -37,9 +38,9 @@ export default class CollectionController {
     const id = payload.id
 
     const collection = await Collection.findOrFail(id)
-    ;(collection.name = payload.name),
-      (collection.summary = payload.summary),
-      (collection.category = payload.category),
+    collection.name = payload.name,
+      collection.summary = payload.summary,
+      collection.category = payload.category,
       await collection.save()
 
     session.flash('notification', 'Collection updated successfully')
@@ -48,10 +49,12 @@ export default class CollectionController {
 
   public async showCollection({ view, params }: HttpContextContract) {
     const collection = await Collection.query().where('uuid', params.uuid).first()
+    let appUrl = Env.get('APP_URL')
+
     const products = await Product.query()
       .where('collection_id', collection!.id)
       .orderBy('id', 'desc')
-    return view.render('dashboard/collection_show', { collection, products })
+    return view.render('dashboard/collection_show', { collection, products, appUrl })
   }
 
 
