@@ -1,4 +1,4 @@
-<form class="px-2 mt-2 mb-8 space-y-4" action="{{route('products.store')}}" method="POST">
+<form class="px-2 mt-2 mb-8 space-y-4" action="{{route('batches.store')}}" method="POST">
   <p class="text-2xl font-semibold">Add new batch</p>
   <p class="sm text-slate-400">Adding new batch would generate new qr code to manage the new batch items. Note, batch con not be update. Expiry field depends on whether the product is has expiry.</p>
   {{-- {{ csrfField() }} --}}
@@ -6,11 +6,19 @@
     <span class="block mb-1 text-sm font-medium text-white">New stock number</span>
     <input class="form-input {{ (flashMessages.has('errors.price') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
       value="{{flashMessages.get('price','') ?? ''}}" type="number" name="batchStock"
-      placeholder="$00.00" inputmode="email" required />
+      placeholder="$00.00"  required />
     @if(flashMessages.has('errors.price'))
     <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.price')}}</p>
     @endif
   </label>
+  <label class="block">
+      <span class="block mb-1 text-sm font-medium text-white">Expiry date</span>
+      <input datepicker class="form-input {{ (flashMessages.has('errors.price') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
+        value="{{flashMessages.get('price','') ?? ''}}" type="date" name="batchStock" placeholder="$00.00"/>
+      @if(flashMessages.has('errors.price'))
+      <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.price')}}</p>
+      @endif
+    </label>
   <input type="submit" class="w-full py-3 mt-3 btn btn-primary hover:bg-purple-600 border-0" value="Create product" />
 </form>
 

@@ -1,4 +1,4 @@
-import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
+import { schema, rules, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class CreateBatchValidator {
@@ -23,7 +23,11 @@ export default class CreateBatchValidator {
    *     ])
    *    ```
    */
-  public schema = schema.create({})
+  public schema = schema.create({
+    productId: schema.number(),
+    batchStock: schema.number(),
+    expiryDate: schema.date.optional({}, [rules.after('today')]),
+  })
 
   /**
    * Custom messages for validation failures. You can make use of dot notation `(.)`
@@ -36,5 +40,8 @@ export default class CreateBatchValidator {
    * }
    *
    */
-  public messages: CustomMessages = {}
+  public messages: CustomMessages = {
+    'required': 'The {{ field }} is required to create a batch',
+    'expiryDate.date': 'Please enter a valid',
+  }
 }

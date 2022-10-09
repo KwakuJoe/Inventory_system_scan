@@ -4,19 +4,18 @@ import Product from 'App/Models/Product'
 import CreateCollectionValidator from 'App/Validators/CreateCollectionValidator'
 import UpdateCollectionValidator from 'App/Validators/UpdateCollectionValidator'
 import Env from '@ioc:Adonis/Core/Env'
+import ExpiryCategory from 'App/Models/ExpiryCategory'
 export default class CollectionController {
-
-  public async index({ view, request}: HttpContextContract) {
+  public async index({ view, request }: HttpContextContract) {
     const page = request.input('page', 1)
     const limit = 50
 
     const collections = await Collection.query().paginate(page, limit)
 
-
     // Changes the baseURL for the pagination links
     collections.baseUrl('/collections/all')
 
-    return view.render('dashboard/collection_all', { collections})
+    return view.render('dashboard/collection_all', { collections })
   }
 
   public async store({ request, response, session }: HttpContextContract) {
@@ -25,7 +24,7 @@ export default class CollectionController {
     await Collection.create({
       name: payload.name,
       summary: payload.summary,
-      category: payload.category,
+      expiryCategoryId: payload.expiryCategoryId,
     })
 
     session.flash('notification', 'Collection created successfully')
@@ -33,32 +32,57 @@ export default class CollectionController {
     return response.redirect('back')
   }
 
+
   public async update({ request, response, session }: HttpContextContract) {
     const payload = await request.validate(UpdateCollectionValidator)
     const id = payload.id
 
     const collection = await Collection.findOrFail(id)
     collection.name = payload.name,
+
       collection.summary = payload.summary,
-      collection.category = payload.category,
+
+      collection.expiryCategoryId = payload.expiryCategory,
+
       await collection.save()
 
     session.flash('notification', 'Collection updated successfully')
     return response.redirect('back')
   }
 
+
+
+
   public async showCollection({ view, params }: HttpContextContract) {
-    const collection = await Collection.query().where('uuid', params.uuid).first()
+    const collection = await Collection.query()
+      .withAggregate('batches', (query) => {
+        query.sum('batch_stock').as('collectionStockTotal')
+      })
+      .where('uuid', params.uuid)
+      .firstOrFail()
+
+    // app url
     let appUrl = Env.get('APP_URL')
 
+    // query product under a collection with total stock of each product
     const products = await Product.query()
-      .where('collection_id', collection!.id)
+      .withAggregate('batches', (query) => {
+        query.sum('batch_stock').as('stockTotal')
+      })
+      .where('collection_id', collection.id)
       .orderBy('id', 'desc')
-    return view.render('dashboard/collection_show', { collection, products, appUrl })
+
+    // total product under this collection
+    const totalProduct = await Collection.query()
+      .withCount('products', (query) => {
+        query.as('totalProductPerCollection')
+      })
+      .where('uuid', params.uuid)
+      .firstOrFail()
+
+    return view.render('dashboard/collection_show', { collection, products, appUrl, totalProduct })
+
   }
-
-
-
 
   public async destroy({ params, session, response }: HttpContextContract) {
     const collection = await Collection.findOrFail(params.id)

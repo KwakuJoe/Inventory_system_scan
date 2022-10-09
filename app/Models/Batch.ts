@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, beforeCreate, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeCreate, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import { uuid } from 'uuidv4'
+import Product from './Product'
 
 
 export default class Batch extends BaseModel {
@@ -10,8 +11,8 @@ export default class Batch extends BaseModel {
   @column()
   public uuid: string
 
-  @column.dateTime()
-  public dateAdded: DateTime
+  @column()
+  public productId: number
 
   @column()
   public batchStock: number
@@ -29,4 +30,7 @@ export default class Batch extends BaseModel {
   public static async createUUID(model: Batch) {
     model.uuid = uuid()
   }
+
+  @belongsTo(() => Product)
+  public batch: BelongsTo<typeof Product>
 }

@@ -21,7 +21,14 @@
         </button>
       </div>
       @endif
-      <div class="flex flex-row flex-wrap justify-between gap-x-2 sm:flex-col gap-y-3">
+      {{--  breadcrumbs  --}}
+      <nav aria-label="breadcrumb ">
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a class="text-white" href="/dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item text-purple-500">All Collections</li>
+          </ul>
+        </nav>
+      <div class="flex flex-row flex-wrap justify-between gap-x-2 sm:flex-col gap-y-3 mt-3">
         <div class="flex">
           <p class="text-2xl">All</p>
           <p class="ml-2 text-2xl font-bold">collections</p>

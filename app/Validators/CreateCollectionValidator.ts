@@ -26,7 +26,7 @@ export default class CreateCollectionValidator {
   public schema = schema.create({
     name: schema.string([rules.maxLength(40)]),
     summary: schema.string([rules.maxLength(20)]),
-    category: schema.string({}),
+    expiryCategoryId: schema.number(),
   })
 
   /**

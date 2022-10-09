@@ -31,12 +31,18 @@
         </button>
       </div>
       @endif
+      {{-- breadcrumbs --}}
+      <nav aria-label="breadcrumb ">
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a class="text-white" href="/dashboard">Dashboard</a></li>
+          <li class="breadcrumb-item text-purple-500">{{collection.name}} Collection</li>
+        </ul>
+      </nav>
       {{-- table header buttons --}}
       <div>
-        <div class="flex flex-row flex-wrap items-center justify-between mb-4">
+        <div class="flex flex-row flex-wrap items-center justify-between mb-4 mt-3">
           <div class="flex flex-row items-end mr-10 gap-x-2">
             <p class="p-0 m-0 text-2xl font-bold">{{collection.name}}</p>
-            <p class="p-0 m-0 text-sm text-slate-400">Collection</p>
           </div>
           <form action="{{route('search.all', {term:'collection-product-items'})}}">
             <div class="form-white input-group" style="width: 250px;">
@@ -48,14 +54,13 @@
       </div>
       {{-- table --}}
       @each(product in products)
-      <div class="flex flex-row flex-wrap items-center p-3 rounded gap-y-4 bg-gray-900">
+      <div class="flex flex-row flex-wrap items-center p-3 rounded gap-y-4 bg-gray-900 mb-1">
         {{-- icon --}}
         <div class="flex-none mr-4">
           {{-- <ion-icon class="p-2 bg-purple-200 rounded" name="cube-outline"></ion-icon> --}}
           <div x-data="dialog()">
             <a class="btn border-0" x-spread="trigger">
-              <img class="object-fill h-16 w-16 rounded"
-                src="{{appUrl}}{{product.image}}">
+              <img class="object-scale-down h-16 w-16 rounded" src="{{appUrl}}{{product.image}}">
             </a>
             <div class="dialog" x-spread="dialog" x-cloak>
               <div class="dialog-content">
@@ -65,8 +70,7 @@
                   </button>
                 </div>
                 <div class="dialog-body bg-gray-900 flex flex-col">
-                  <img class="rounded self-center"
-                    src="{{appUrl}}{{product.image}}">
+                  <img class="rounded self-center" src="{{appUrl}}{{product.image}}">
                 </div>
               </div>
             </div>
@@ -85,7 +89,7 @@
         </div>
         {{-- stock --}}
         <div class="flex flex-row items-center mr-10 basis-2/12 gap-x-2">
-          <p class="p-0 m-0 text-xl font-bold">20</p>
+          <p class="p-0 m-0 text-xl font-bold">{{product.$extras.stockTotal == null ? 0 : product.$extras.stockTotal}}</p>
           <p class="p-0 m-0 text-sm text-slate-400">Available Stock</p>
         </div>
         <div class="grow-0 shrink-0 ">
@@ -117,7 +121,7 @@
             <div class="flex flex-row justify-evenly">
               <ion-icon class="p-3 text-2xl text-blue-500 bg-blue-100 rounded" name="cube-outline"></ion-icon>
               <div class="flex flex-col justify-center">
-                <p class="p-0 m-0 text-2xl font-bold">20</p>
+                <p class="p-0 m-0 text-2xl font-bold">{{totalProduct.$extras.totalProductPerCollection}}</p>
                 <p class="p-0 m-0 text-sm text-slate-400">Total products</p>
               </div>
             </div>
@@ -126,7 +130,7 @@
             <div class="flex flex-row justify-evenly">
               <ion-icon class="p-3 text-2xl text-orange-500 bg-orange-100 rounded" name="cube-outline"></ion-icon>
               <div class="flex flex-col justify-center">
-                <p class="p-0 m-0 text-2xl font-bold">200</p>
+                <p class="p-0 m-0 text-2xl font-bold">{{collection.$extras.collectionStockTotal == null ? 0 : collection.$extras.collectionStockTotal}}</p>
                 <p class="p-0 m-0 text-sm text-slate-400">Total items</p>
               </div>
             </div>

@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, beforeCreate, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeCreate, BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import { uuid } from 'uuidv4'
 import Collection from '../Models/Collection'
+import Batch from '../Models/Batch'
 
 
 export default class Product extends BaseModel {
@@ -39,6 +40,10 @@ export default class Product extends BaseModel {
 
   @belongsTo(() => Collection)
   public collection: BelongsTo<typeof Collection>
+
+  // define relationship between collection and product 1:M
+  @hasMany(() => Batch)
+  public batches: HasMany<typeof Batch>
 }
 
 
