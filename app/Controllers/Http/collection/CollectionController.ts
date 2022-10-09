@@ -42,7 +42,7 @@ export default class CollectionController {
 
       collection.summary = payload.summary,
 
-      collection.expiryCategoryId = payload.expiryCategory,
+      collection.expiryCategoryId = payload.expiryCategoryId,
 
       await collection.save()
 
@@ -54,6 +54,7 @@ export default class CollectionController {
 
 
   public async showCollection({ view, params }: HttpContextContract) {
+    //
     const collection = await Collection.query()
       .withAggregate('batches', (query) => {
         query.sum('batch_stock').as('collectionStockTotal')
@@ -80,7 +81,19 @@ export default class CollectionController {
       .where('uuid', params.uuid)
       .firstOrFail()
 
-    return view.render('dashboard/collection_show', { collection, products, appUrl, totalProduct })
+    // query to get expiry category
+    const expiryCategories = await ExpiryCategory.query()
+
+    // query the category where this collection belongs to
+    const collectionCategory = await ExpiryCategory.query().where('id', collection.expiryCategoryId).first()
+    return view.render('dashboard/collection_show', {
+      collection,
+      products,
+      appUrl,
+      totalProduct,
+      expiryCategories,
+      collectionCategory,
+    })
 
   }
 

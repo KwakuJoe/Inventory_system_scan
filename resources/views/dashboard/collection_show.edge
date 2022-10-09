@@ -138,7 +138,7 @@
         </div>
         <div class="bg-gray-900 hidden sm:block rounded p-2 mx-3 my-3">
           <p class="text-sm text-white font-bold">
-            {{collection.category}}</p>
+            {{collectionCategory.name}}</p>
         </div>
         {{-- forms to add product --}}
         <div class="p-3 my-3 mt-5 rounded bg-gray-900">
@@ -192,7 +192,7 @@
             <div class="modal fade" id="addCollectionModalForm" data-bs-backdrop="static" data-bs-keyboard="false"
               tabindex="-1" aria-labelledby="addCollectionModalFormLabel" aria-hidden="true">
               <div class="modal-dialog ">
-                <div class="modal-content">
+                <div class="modal-content bg-gray-900">
                   <div class="border-0 modal-header">
                     <h5 class="modal-title" id="addCollectionModalFormLabel">Collection</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -203,11 +203,11 @@
                       method="POST">
                       <p class="text-2xl font-semibold">Update Collections</p>
                       {{-- hidden input for holding the uuid --}}
-                      <input class="hidden form-input" type="number" name="id" value="{{collection.id}}">
+                      <input class="hidden form-input bg-gray-800 border-0 text-white" type="number" name="id" value="{{collection.id}}">
                       {{-- {{ csrfField() }} --}}
                       <label class="block">
                         <span class="block mb-1 text-sm font-medium text-gray-700">Collection name</span>
-                        <input class="form-input {{ (flashMessages.has('errors.name') ? 'border-red-600' : '') }}"
+                        <input class="form-input {{ (flashMessages.has('errors.name') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
                           value="{{collection.name}}" type="text" name="name" placeholder="Samsung collection"
                           inputmode="name" required />
                         @if(flashMessages.has('errors.name'))
@@ -216,7 +216,7 @@
                       </label>
                       <label class="block">
                         <span class="block mb-1 text-sm font-medium text-gray-700">Summary</span>
-                        <input class="form-input {{ (flashMessages.has('errors.summary') ? 'border-red-600' : '') }}"
+                        <input class="form-input {{ (flashMessages.has('errors.summary') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
                           value="{{collection.summary}}" type="text" name="summary"
                           placeholder="Eg. samsung S5, S6 to S7 and more" inputmode="email" required />
                         @if(flashMessages.has('errors.summary'))
@@ -225,19 +225,20 @@
                       </label>
                       <label class="block">
                         <span class="block mb-1 text-sm font-medium text-gray-700">Category</span>
-                        <select class="form-select" name="category">
-                          <option>Non-expiry product</option>
-                          <option>Expiry product</option>
+                        <select class="form-select bg-gray-800 border-0 text-white" name="expiryCategoryId">
+                          @each(expiryCategory in expiryCategories)
+                          <option value="{{expiryCategory.id}}">{{expiryCategory.name}}</option>
+                          @endeach
                         </select>
-                        @if(flashMessages.has('errors.category'))
-                        <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.category')}}</p>
+                        @if(flashMessages.has('errors.expiryCategoryId'))
+                        <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.expiryCategoryId')}}</p>
                         @endif
                       </label>
-                      <input type="submit" class="w-full py-3 mt-3 btn btn-primary hover:bg-purple-600"
-                        value="Create collection" />
+                      <input type="submit" class="w-full py-3 mt-3 btn btn-primary border-0 hover:bg-purple-600"
+                        value="Update collection" />
                     </form>
                   </div>
-                  <div class="modal-footer bg-slate-200">
+                  <div class="modal-footer bg-gray-800 border-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                   </div>
                 </div>

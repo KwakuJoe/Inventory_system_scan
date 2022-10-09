@@ -50,8 +50,9 @@ Route.group(() => {
 }).middleware('auth')
 
 Route.group(() => {
-  Route.resource('/products', 'product/ProductController').except(['show'])
+  Route.resource('/products', 'product/ProductController').except(['show','index'])
   Route.get('/product/:uuid', 'product/ProductController.showProduct').as('product.show')
+    Route.get('/products/all/:page?', 'product/ProductController.index').as('product.index')
 }).middleware('auth')
 
 Route.group(() => {

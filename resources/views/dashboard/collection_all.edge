@@ -21,13 +21,13 @@
         </button>
       </div>
       @endif
-      {{--  breadcrumbs  --}}
+      {{-- breadcrumbs --}}
       <nav aria-label="breadcrumb ">
-          <ul class="breadcrumb">
-            <li class="breadcrumb-item"><a class="text-white" href="/dashboard">Dashboard</a></li>
-            <li class="breadcrumb-item text-purple-500">All Collections</li>
-          </ul>
-        </nav>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a class="text-white" href="/dashboard">Dashboard</a></li>
+          <li class="breadcrumb-item text-purple-500">All Collections</li>
+        </ul>
+      </nav>
       <div class="flex flex-row flex-wrap justify-between gap-x-2 sm:flex-col gap-y-3 mt-3">
         <div class="flex">
           <p class="text-2xl">All</p>
@@ -36,22 +36,60 @@
         <div class="flex flex-row flex-wrap gap-x-2 gap-y-3">
           {{-- create collection --}}
           <!-- Button trigger modal add collection -->
-          <button type="button" class="btn btn-primary border-0" data-bs-toggle="modal" data-bs-target="#addCollectionModalForm">
+          <button type="button" class="btn btn-primary border-0" data-bs-toggle="modal"
+            data-bs-target="#addCollectionModalForm">
             Create collection
           </button>
           <!-- Modal -->
           <div class="modal fade" id="addCollectionModalForm" data-bs-backdrop="static" data-bs-keyboard="false"
             tabindex="-1" aria-labelledby="addCollectionModalFormLabel" aria-hidden="true">
-            <div class="modal-dialog ">
-              <div class="modal-content">
+            <div class="modal-dialog">
+              <div class="modal-content bg-gray-900">
                 <div class="border-0 modal-header">
                   <h5 class="modal-title" id="addCollectionModalFormLabel">Collection</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                  @include('../components/collection_components/add_collection_modal_form.edge')
+                <div class="modal-bod">
+                  {{-- Add colection form --}}
+                  <form class="mb-8 mt-2 space-y-4 px-2" action="/collections" method="POST">
+                    <p class="text-2xl font-semibold">Create Collections</p>
+                    {{-- {{ csrfField() }} --}}
+                    <label class="block">
+                      <span class="block mb-1 text-sm font-medium text-white">Collection name</span>
+                      <input
+                        class="form-input {{ (flashMessages.has('errors.name') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
+                        value="{{flashMessages.get('name','') ?? ''}}" type="text" name="name"
+                        placeholder="Samsung collection" inputmode="name" required />
+                      @if(flashMessages.has('errors.name'))
+                      <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.name')}}</p>
+                      @endif
+                    </label>
+                    <label class="block">
+                      <span class="block mb-1 text-sm font-medium text-white">Summary</span>
+                      <input
+                        class="form-input {{ (flashMessages.has('errors.summary') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
+                        value="{{flashMessages.get('summary','') ?? ''}}" type="text" name="summary"
+                        placeholder="Eg. samsung S5, S6 to S7 and more" inputmode="email" required />
+                      @if(flashMessages.has('errors.summary'))
+                      <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.summary')}}</p>
+                      @endif
+                    </label>
+                    <label class="block">
+                      <span class="block mb-1 text-sm font-medium text-white">Category</span>
+                      <select class="form-select bg-gray-800 border-0 text-white" name="expiryCategoryId">
+                        @each(category in categories)
+                        <option value="{{category.id}}">{{category.name}}</option>
+                        @endeach
+                      </select>
+                      @if(flashMessages.has('errors.expiryCategory'))
+                      <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.expiryCategory')}}</p>
+                      @endif
+                    </label>
+                    <input type="submit" class="w-full py-3 mt-3 btn btn-primary hover:bg-purple-600 border-0"
+                      value="Create collection" />
+                  </form>
                 </div>
-                <div class="modal-footer bg-slate-200">
+                <div class="modal-footer bg-gray-800 border-0">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
               </div>
@@ -60,7 +98,8 @@
           {{-- search --}}
           <form action="{{route('search.all', {term:'collection-product-items'})}}">
             <div class="form-white input-group" style="width: 250px;">
-              <input class="rounded form-input bg-gray-900 text-white border-0" type="search" name="name" placeholder="Search product" required />
+              <input class="rounded form-input bg-gray-900 text-white border-0" type="search" name="name"
+                placeholder="Search product" required />
             </div>
           </form>
         </div>
@@ -72,8 +111,7 @@
         @each(collection in collections)
         <div class="col-lg-3">
           <a href="{{route('collection.show', {uuid:collection.uuid})}}">
-            <div
-              class="flex flex-col items-center justify-center p-3 rounded bg-gray-900 hover:text-purple-600">
+            <div class="flex flex-col items-center justify-center p-3 rounded bg-gray-900 hover:text-purple-600">
               <div class="mb-2 avatar bg-gray-800">
                 <ion-icon name="cube-outline"></ion-icon>
               </div>
@@ -97,7 +135,8 @@
         @endeach
         <nav class="mt-4 pagination" role="navigation" aria-label="pagination">
           @each(anchor in collections.getUrlsForRange(1, collections.lastPage))
-          <a href="{{ anchor.url }}" class="pagination-link bg-gray-900 text-white" aria-label="Page 5" aria-current="page">
+          <a href="{{ anchor.url }}" class="pagination-link bg-gray-900 text-white" aria-label="Page 5"
+            aria-current="page">
             {{anchor.page}}
           </a>
           @endeach

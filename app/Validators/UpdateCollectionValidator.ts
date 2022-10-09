@@ -27,7 +27,7 @@ export default class UpdateCollectionValidator {
     id: schema.number(),
     name: schema.string([rules.maxLength(40)]),
     summary: schema.string([rules.maxLength(20)]),
-    expiryCategory: schema.number(),
+    expiryCategoryId: schema.number(),
   })
 
   /**

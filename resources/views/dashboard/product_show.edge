@@ -185,12 +185,12 @@
         {{-- expiry or not --}}
         <div class="flex flex-col mr-10 flex-none">
           <p
-            class="p-0 m-0 text-base font-bold {{ product.collection.category == 'Non-expiry product' ? 'text-white' : 'text-orange-500'  }} ">
-            Non-expiry product</p>
+            class="p-0 m-0 text-base font-bold {{ product.collection.expiryCategoryId == 1 ? 'text-white' : 'text-orange-500'  }} ">
+            {{product.collection.expiryCategoryId == 1 ? 'Non-expiry' : 'Expiry'}}</p>
           <p></p>
         </div>
         {{-- expiry date --}}
-        <div class="flex flex-col mr-10 flex-none {{ product.collection.category == 'Non-expiry product' ? 'hidden' : ''  }}">
+        <div class="flex flex-col mr-10 flex-none {{ product.collection.expiryCategoryId == 1 ? 'hidden' : ''  }}">
           <p class="p-0 m-0 text-base text-orange-500 font-semibold">{{batch.expiryDate}}</p>
           <p class="p-0 m- text-sm text-slate-400">Expiry date</p>
         </div>

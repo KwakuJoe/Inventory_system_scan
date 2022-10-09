@@ -11,7 +11,19 @@ export default class ProductController {
     const page = request.input('page', 1)
     const limit = 50
 
-    const products = await Product.query().paginate(page, limit)
+    // const products = await Product.query().paginate(page, limit)
+
+    // query product under a collection with total stock of each product
+    const products = await Product.query()
+      .withAggregate('batches', (query) => {
+        query.sum('batch_stock').as('stockTotal')
+      })
+      .preload('collection')
+      .orderBy('id', 'desc')
+      .paginate(page, limit)
+
+
+
     const appUrl = Env.get('APP_URL')
     // Changes the baseURL for the pagination links
     products.baseUrl('/products/all')
@@ -36,6 +48,8 @@ export default class ProductController {
         query.sum('batch_stock').as('stockTotal')
       })
       .firstOrFail()
+
+
 
     return view.render('dashboard/product_show', { product, appUrl, batches, stock })
   }
