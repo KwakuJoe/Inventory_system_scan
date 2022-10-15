@@ -1,21 +1,24 @@
 <nav class="pt-3 bg-gray-800 navbar navbar-expand-lg ">
   <div class="container">
     <a class="text-2xl font-bold navbar-brand text-white" href="/dashboard">{{auth.user.brandName}}</a>
-    <button class="navbar-toggler text-white border-gray-100" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler text-white border-gray-100" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <ion-icon name="menu-outline" class="border-white"></ion-icon>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="mb-2 navbar-nav mb-lg-0 me-auto">
         <li class="nav-item">
-          <a class="nav-link active text-white" aria-current="page" href="#">Home</a>
+          <a class="nav-link active text-white" aria-current="page" href="{{route('collection.index')}}">Collections</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white" href="#">Link</a>
+          <a class="nav-link text-white" href="{{route('product.index')}}">Products</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{{route('users.all')}}">App users</a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
+          <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
             Dropdown
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -27,9 +30,6 @@
             <li><a class="dropdown-item" href="#">Something else here</a></li>
           </ul>
         </li>
-        <li class="nav-item">
-          <a class="nav-link disabled text-white">Disabled</a>
-        </li>
       </ul>
 
 
@@ -38,7 +38,8 @@
         {{-- @if(auth.isLoggedIn) --}}
         <form action="{{route('search.all', {term:'collection-product-items'})}}">
           <div class="form-white input-group" style="width: 250px;">
-            <input class="rounded form-input bg-gray-900 border-0 text-white" type="search" name="name" placeholder="Search product" required />
+            <input class="rounded form-input bg-gray-900 border-0 text-white" type="search" name="name"
+              placeholder="Search product" required />
           </div>
         </form>
         <li class="nav-item dropdown">
@@ -84,15 +85,15 @@
             <li>
               <form id="logout" action="/logout" method="post">
                 {{-- {{ csrfField() }} --}}
-                <li>
-                  <a class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout').submit()">
-                    <span class="icon">
-                      <ion-icon name="log-out-outline"></ion-icon>
-                    </span>
-                    <span>Logout</span>
-                    </span>
-                  </a>
-                </li>
+            <li>
+              <a class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout').submit()">
+                <span class="icon">
+                  <ion-icon name="log-out-outline"></ion-icon>
+                </span>
+                <span>Logout</span>
+                </span>
+              </a>
+            </li>
             </form>
         </li>
       </ul>

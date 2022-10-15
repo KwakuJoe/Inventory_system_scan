@@ -4,7 +4,7 @@ import LoginValidator from 'App/Validators/LoginValidator'
 import SetupAuthValidator from 'App/Validators/SetupAuthValidator'
 import Hash from '@ioc:Adonis/Core/Hash'
 
-export default class authController {
+export default class AuthController {
   public async showLogin({ view }: HttpContextContract) {
     return view.render('auth/login')
   }
@@ -44,7 +44,7 @@ export default class authController {
   public async login({ request, session, response, auth }: HttpContextContract) {
     const { username, passcode, remember } = await request.validate(LoginValidator)
 
-    const user = await User.findBy('username', username)
+    const user = await User.query().where('username', username).where('is_mobile_user', 0).first()
 
     // if (!user) {
     //   session.flash('error','Could not find user')

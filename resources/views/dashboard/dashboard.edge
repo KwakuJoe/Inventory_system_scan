@@ -232,7 +232,7 @@
             <div class="flex flex-row justify-evenly">
               <ion-icon class="p-3 text-2xl text-purple-500 bg-purple-100 rounded" name="cube-outline"></ion-icon>
               <div class="flex flex-col justify-center">
-                <p class="p-0 m-0 text-2xl font-bold">{{stock.$extras.stockTotal == null ? 0 : stock.$extras.stockTotal}}</p>
+                <p class="p-0 m-0 text-2xl font-bold">{{stockTotal}}</p>
                 <p class="p-0 m-0 text-sm text-slate-400">Total items Stock</p>
               </div>
             </div>
@@ -244,7 +244,7 @@
             <div class="flex flex-row justify-evenly">
               <ion-icon class="p-3 text-2xl text-green-500 bg-green-100 rounded" name="cube-outline"></ion-icon>
               <div class="flex flex-col justify-center">
-                <p class="p-0 m-0 text-2xl font-bold">{{nonExpiry.$extras.totalNonExpiry == null ? 0 : nonExpiry.$extras.totalNonExpiry}}</p>
+                <p class="p-0 m-0 text-2xl font-bold">{{expiryTotal}}</p>
                 <p class="p-0 m-0 text-sm text-slate-400">Expiry products</p>
               </div>
             </div>
@@ -253,7 +253,7 @@
             <div class="flex flex-row justify-evenly">
               <ion-icon class="p-3 text-2xl text-blue-500 bg-blue-100 rounded" name="cube-outline"></ion-icon>
               <div class="flex flex-col justify-center">
-                <p class="p-0 m-0 text-2xl font-bold">{{expiry.$extras.totalExpiry == null ? 0 : expiry.$extras.totalExpiry}}</p>
+                <p class="p-0 m-0 text-2xl font-bold">{{nonExpiryTotal}}</p>
                 <p class="p-0 m-0 text-sm text-slate-400">Non-expiry</p>
               </div>
             </div>

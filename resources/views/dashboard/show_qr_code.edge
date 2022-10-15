@@ -1,0 +1,38 @@
+@layout('layout/app')
+
+@set('title', 'show-batch-qr')
+
+@section('body')
+<section class="container h-screen">
+  <div class="row justify-content-center mt-3">
+    <div class="flex flex-col justify-center items-center bg-gray-800 w-fit p-5 gap-y-5 rounded">
+      <div class="flex flex-row bg-gray-900 p-3 gap-x-3 rounded">
+        <div class="avatar bg-gray-800">
+          <ion-icon name="cube-outline"></ion-icon>
+        </div>
+        <div class="flex flex-col">
+          <p class="text-purple-600 font-bold text-lg">{{batch.uuid}}</p>
+          <p class="text-sm text-white">Batch Id</p>
+        </div>
+      </div>
+      <div class="bg-white p-4 rounded w-fit">
+        <div id="qrcode"></div>
+      </div>
+      <p class="text-white text-">Download by right-clicking on the qrcode and saving it as image</p>
+    </div>
+  </div>
+</section>
+@endsection
+
+@section('scripts')
+<script type="text/javascript">
+  var qrcode = new QRCode("qrcode", {
+      text: "{{ batch.uuid }}",
+      height:300,
+      width:300,
+      colorDark : "#000000",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.H
+      });
+</script>
+@endsection

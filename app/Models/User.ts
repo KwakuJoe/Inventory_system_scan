@@ -22,6 +22,9 @@ export default class User extends BaseModel {
   public brandName: string
 
   @column()
+  public isMobileUser: boolean
+
+  @column()
   public rememberMeToken: string
 
   @column({ serializeAs: null })

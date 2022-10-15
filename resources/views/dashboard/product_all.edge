@@ -93,7 +93,7 @@
         @endeach
         <nav class="mt-4 pagination" role="navigation" aria-label="pagination">
           @each(anchor in products.getUrlsForRange(1, products.lastPage))
-          <a href="{{ anchor.url }}" class="pagination-link bg-gray-900 text-white" aria-label="Page 5"
+          <a href="{{ anchor.url }}" class="pagination-link bg-gray-900 text-white mr-2" aria-label="Page 5"
             aria-current="page">
             {{anchor.page}}
           </a>

@@ -25,11 +25,13 @@
       <nav aria-label="breadcrumb ">
         <ul class="breadcrumb">
           <li class="breadcrumb-item"><a class="text-white" href="/dashboard">Dashboard</a></li>
-          <li class="breadcrumb-item"><a class="text-white" href="{{route('collection.show',{uuid:product.collection.uuid})}}">{{product.collection.name}} Collection</a></li>
+          <li class="breadcrumb-item"><a class="text-white"
+              href="{{route('collection.show',{uuid:product.collection.uuid})}}">{{product.collection.name}}
+              Collection</a></li>
           <li class="breadcrumb-item text-purple-500">{{product.name}}</li>
         </ul>
       </nav>
-      <div class="flex flex-row items-end justify-between flex-wrap gap-y-2 mb-3 mt-4">
+      <div class="flex flex-row justify-between flex-wrap gap-y-2 mb-3 mt-4">
         <div class="flex">
           {{-- image --}}
           <div x-data="dialog()">
@@ -58,7 +60,8 @@
               <div class="flex flex-row justify-start gap-x-3">
                 <ion-icon class="p-2 text-2xl text-orange-500 bg-gray-900 rounded" name="cube-outline"></ion-icon>
                 <div class="flex flex-col justify-center">
-                  <p class="p-0 m-0 text-2xl font-bold">{{stock.$extras.stockTotal == null ? 0 : stock.$extras.stockTotal}}</p>
+                  <p class="p-0 m-0 text-2xl font-bold">{{stock.$extras.stockTotal == null ? 0 :
+                    stock.$extras.stockTotal}}</p>
                 </div>
               </div>
               <div class="flex flex-row justify-start gap-x-3">
@@ -71,71 +74,51 @@
           </div>
         </div>
         {{-- right hand side --}}
-        <div class="flex">
+        <div class="flex flex-col justify-between items-end">
+          {{-- Edit product --}}
+          <div class="flex flex-row">
+            <button type="button" class="btn text-blue-500 border-0" data-bs-toggle="modal"
+              data-bs-target="#editProductnModalForm">
+              <div class="flex flex-row items-center">
+                <ion-icon name="create-outline"></ion-icon>
+                <p class="ms-2">Edit Product</p>
+              </div>
+            </button>
+            {{-- delete ptoduct --}}
+            <div x-data="dialog()">
+              <button class="btn text-red-500 border-0" x-spread="trigger">
+                <div class="flex flex-row items-center">
+                  <ion-icon name="trash-outline"></ion-icon>
+                  <p class="ms-2">Delete Product</p>
+                </div>
+              </button>
+              <div class="dialog dialog-sm" x-spread="dialog" x-cloak>
+                <div class="dialog-content bg-gray-900">
+                  <div class="dialog-header border-0">Drop product {{ product.name }}
+                    <button type="button" class="btn btn-light btn-sm btn-icon" aria-label="Close" @click="close">
+                      <ion-icon name="close-outline"></ion-icon>
+                    </button>
+                  </div>
+                  <div class="dialog-body">Are you sure you want to permanently remove this product. Note that
+                    removing this product would also permanently remove all it batches. Do you wish to proceed?</div>
+                  <div class="dialog-footer bg-gray-800">
+                    <button type="button" class="btn btn-light" @click="close">Close</button>
+                    <form action="{{`/product/${product.id}?_method=DELETE`}}" method="POST">
+                      <button type="submit" class="ml-3 btn btn-danger border-0">Drop product</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           {{-- add new bactch --}}
-          <button type="button" class="btn btn-primary border-0" data-bs-toggle="modal"
-            data-bs-target="#addCollectionModalForm">
+          <button type="button" class="btn btn-primary border-0 w-fit" data-bs-toggle="modal"
+            data-bs-target="#addBatchModalForm">
             <div class="flex flex-row items-center justify-between">
               <ion-icon name="cube-outline"></ion-icon>
               <p class="ms-2">Add new batch</p>
             </div>
           </button>
-          <!-- Modal -->
-          <div class="modal fade" id="addCollectionModalForm" data-bs-backdrop="static" data-bs-keyboard="false"
-            tabindex="-1" aria-labelledby="addCollectionModalFormLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content bg-gray-900">
-                <div class="border-0 modal-header">
-                  <h5 class="modal-title" id="addCollectionModalFormLabel">Collection</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  {{-- forms to add btaches--}}
-                  <form class="px-2 mt-2 mb-8 space-y-4" action="{{route('batches.store')}}" method="POST">
-                    <p class="text-2xl font-semibold">Add new batch</p>
-                    <p class="sm text-slate-400">Adding new batch would generate new qr code to manage the new batch
-                      items. Note, batch
-                      con not be update. Expiry field depends on whether the product is has expiry.</p>
-                    {{-- {{ csrfField() }} --}}
-                    <label class="hidden">
-                      <span class="block mb-1 text-sm font-medium text-white">New stock number</span>
-                      <input
-                        class="form-input {{ (flashMessages.has('errors.price') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
-                        value="{{product.id}}" type="number" name="productId" placeholder="$00.00" required />
-                      @if(flashMessages.has('errors.productId'))
-                      <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.productId')}}</p>
-                      @endif
-                    </label>
-                    <label class="block">
-                      <span class="block mb-1 text-sm font-medium text-white">New stock number</span>
-                      <input
-                        class="form-input {{ (flashMessages.has('errors.batchStock') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
-                        value="{{flashMessages.get('batchStock','') ?? ''}}" type="number" name="batchStock"
-                        placeholder="$00.00" required />
-                      @if(flashMessages.has('errors.batchStock'))
-                      <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.batchStock')}}</p>
-                      @endif
-                    </label>
-                    <label class="block">
-                      <span class="block mb-1 text-sm font-medium text-white">Expiry date</span>
-                      <input datepicker
-                        class="form-input {{ (flashMessages.has('errors.expiryDate') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
-                        value="{{flashMessages.get('expiryDate','') ?? ''}}" type="date" name="expiryDate"
-                        placeholder="$00.00" />
-                      @if(flashMessages.has('errors.expiryDate'))
-                      <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.expiryDate')}}</p>
-                      @endif
-                    </label>
-                    <input type="submit" class="w-full py-3 mt-3 btn btn-primary hover:bg-purple-600 border-0"
-                      value="Add new batch" />
-                  </form>
-                </div>
-                <div class="modal-footer bg-gray-800 border-0">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
       {{-- table list in batches --}}
@@ -144,24 +127,11 @@
       <div class="flex flex-row flex-wrap items-center justify-between p-3 rounded gap-y-4 bg-gray-900 mt-1">
         {{-- Batch qr code --}}
         <div class="flex-none mr-4">
-          {{-- <ion-icon class="p-2 bg-purple-200 rounded" name="cube-outline"></ion-icon> --}}
-          <div x-data="dialog()">
-            <a class="btn border-0" x-spread="trigger">
-              <img class="object-scale-down h-16 w-16 rounded" src="{{appUrl}}{{product.image}}">
-            </a>
-            <div class="dialog" x-spread="dialog" x-cloak>
-              <div class="dialog-content">
-                <div class="dialog-header bg-gray-900 border-0"> Qr Code
-                  <button type="button" class="btn btn-light btn-sm btn-icon" aria-label="Close" @click="close">
-                    <ion-icon name="close-outline"></ion-icon>
-                  </button>
-                </div>
-                <div class="dialog-body bg-gray-900 flex flex-col">
-                  <img class="rounded self-center object-scale-down" src="{{appUrl}}{{product.image}}">
-                </div>
-              </div>
+          <a href="{{route('batchQrCode.show', {uuid:batch.uuid})}}" class="btn border-0 view_qr_code">
+            <div class="avatar bg-gray-800">
+              <ion-icon name="qr-code-outline"></ion-icon>
             </div>
-          </div>
+          </a>
         </div>
         {{-- batch Id --}}
         <div class="flex flex-col mr-10 lg:basis-1/4">
@@ -184,20 +154,44 @@
 
         {{-- expiry or not --}}
         <div class="flex flex-col mr-10 flex-none">
-          <p
-            class="p-0 m-0 text-base font-bold {{ product.collection.expiryCategoryId == 1 ? 'text-white' : 'text-orange-500'  }} ">
+          <p class="p-0 m-0 text-base font-bold text-white ">
             {{product.collection.expiryCategoryId == 1 ? 'Non-expiry' : 'Expiry'}}</p>
           <p></p>
         </div>
         {{-- expiry date --}}
         <div class="flex flex-col mr-10 flex-none {{ product.collection.expiryCategoryId == 1 ? 'hidden' : ''  }}">
-          <p class="p-0 m-0 text-base text-orange-500 font-semibold">{{batch.expiryDate}}</p>
-          <p class="p-0 m- text-sm text-slate-400">Expiry date</p>
+          <p class="p-0 m-0 text-base text-white font-semibold">{{batch.expiryDate.toFormat('DDD')}}</p>
+          <div class="flex flex-row items-center justify-between gap-x-3">
+            <p class="p-0 m- text-sm text-slate-400">Expiry date</p>
+            <p
+              class="text-sm font-bold text-red-600 bg-gray-800 p-1 rounded {{currentDate >= batch.expiryDate.toFormat('DDD') ? '' : 'hidden' }}">
+              Expiry is due {{currentDate}}</p>
+          </div>
         </div>
-        <div class="grow-0 shrink-0 ">
-          <a href="{{route('product.show', {uuid:product.uuid})}}" class="p-1 bg-gray-800 rounded ">
-            <ion-icon name="eye-outline"></ion-icon>
-          </a>
+        {{-- delete batch --}}
+        <div x-data="dialog()">
+          <button class="btn text-red-500 border-0" x-spread="trigger">
+            <div class="flex flex-row items-center">
+              <ion-icon name="trash-outline"></ion-icon>
+              <p class="ms-2">Delete</p>
+            </div>
+          </button>
+          <div class="dialog dialog-sm" x-spread="dialog" x-cloak>
+            <div class="dialog-content bg-gray-900">
+              <div class="dialog-header border-0 font-bold">Delete this batch
+                <button type="button" class="btn btn-light btn-sm btn-icon" aria-label="Close" @click="close">
+                  <ion-icon name="close-outline"></ion-icon>
+                </button>
+              </div>
+              <div class="dialog-body">Are you sure you want to permanently remove this batch. Note! Associated QR code would not be effective. Do you wish to proceed?</div>
+              <div class="dialog-footer bg-gray-800">
+                <button type="button" class="btn btn-light" @click="close">Close</button>
+                <form action="{{`/batch/${batch.id}?_method=DELETE`}}" method="POST">
+                  <button type="submit" class="ml-3 btn btn-danger border-0">Drop batch</button>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       @else
@@ -208,6 +202,145 @@
         <p class="rounded text-slate-400">No batch added yet</p>
       </div>
       @endeach
+      <nav class="mt-4 pagination" role="navigation" aria-label="pagination">
+        @each(anchor in batches.getUrlsForRange(1, batches.lastPage))
+        <a href="{{ anchor.url }}" class="pagination-link bg-gray-900 text-white mr-2" aria-label="Page 5"
+          aria-current="page">
+          {{anchor.page}}
+        </a>
+        @endeach
+      </nav>
+    </div>
+  </div>
+
+
+
+
+
+  <!-- Add Btach Modal -->
+  <div class="modal fade" id="addBatchModalForm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="addCollectionModalFormLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content bg-gray-900 text-white">
+        <div class="border-0 modal-header">
+          <h5 class="modal-title" id="addCollectionModalFormLabel">Batch</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {{-- forms to add btaches--}}
+          <form class="px-2 mt-2 mb-8 space-y-4" action="{{route('batches.store')}}" method="POST">
+            <p class="text-2xl font-semibold text-white">Add new batch</p>
+            <p class="sm text-slate-400">Adding new batch would generate new qr code to manage the new batch
+              items..</p>
+            {{-- {{ csrfField() }} --}}
+            <label class="hidden">
+              <span class="block mb-1 text-sm font-medium text-white">New stock number</span>
+              <input
+                class="form-input {{ (flashMessages.has('errors.price') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
+                value="{{product.id}}" type="number" name="productId" placeholder="$00.00" required />
+              @if(flashMessages.has('errors.productId'))
+              <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.productId')}}</p>
+              @endif
+            </label>
+            <label class="block">
+              <span class="block mb-1 text-sm font-medium text-white">New stock number</span>
+              <input
+                class="form-input {{ (flashMessages.has('errors.batchStock') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
+                value="{{flashMessages.get('batchStock','') ?? ''}}" type="number" name="batchStock"
+                placeholder="$00.00" required />
+              @if(flashMessages.has('errors.batchStock'))
+              <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.batchStock')}}</p>
+              @endif
+            </label>
+            <label class=" {{ product.collection.expiryCategoryId == 1 ? 'hidden' : 'block'  }}">
+              <span class="block mb-1 text-sm font-medium text-white">Expiry date</span>
+              <input datepicker
+                class="form-input {{ (flashMessages.has('errors.expiryDate') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
+                value="{{flashMessages.get('expiryDate','') ?? ''}}" type="date" name="expiryDate"
+                placeholder="$00.00" />
+              @if(flashMessages.has('errors.expiryDate'))
+              <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.expiryDate')}}</p>
+              @endif
+            </label>
+            <input type="submit" class="w-full py-3 mt-3 btn btn-primary hover:bg-purple-600 border-0"
+              value="Add new batch" />
+          </form>
+        </div>
+        <div class="modal-footer bg-gray-800 border-0">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <!-- Update Product Modal -->
+  <div class="modal fade" id="editProductnModalForm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="addCollectionModalFormLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content bg-gray-900 text-white">
+        <div class="border-0 modal-header">
+          <h5 class="modal-title" id="addCollectionModalFormLabel">Update Product</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {{-- forms to update product--}}
+          <form class="px-2 mt-2 mb-8 space-y-4" action="{{ route('product.update') + '?_method=PUT'}}" method="POST"
+            enctype="multipart/form-data">
+            <p class="text-2xl font-semibold text-white">Update {{product.name}}</p>
+            {{-- {{ csrfField() }} --}}
+            {{-- product Id --}}
+            <label class="hidden">
+              <span class="block mb-1 text-sm font-medium text-white">Product Id</span>
+              <input
+                class="form-input {{ (flashMessages.has('errors.productId') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
+                value="{{product.id}}" type="text" name="productId" placeholder="id here" required />
+              @if(flashMessages.has('errors.nameproductId'))
+              <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.productId')}}</p>
+              @endif
+            </label>
+            {{-- product name --}}
+            <label class="block">
+              <span class="block mb-1 text-sm font-medium text-white">Product name</span>
+              <input
+                class="form-input {{ (flashMessages.has('errors.name') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
+                value="{{product.name}}" type="text" name="name" placeholder="iphone" required />
+              @if(flashMessages.has('errors.name'))
+              <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.name')}}</p>
+              @endif
+            </label>
+            {{-- product price --}}
+            <label class="block">
+              <span class="block mb-1 text-sm font-medium text-white">Price</span>
+              <input
+                class="form-input {{ (flashMessages.has('errors.price') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
+                value="{{product.price}}" type="number" name="price" placeholder="22.00" required />
+              @if(flashMessages.has('errors.name'))
+              <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.price')}}</p>
+              @endif
+            </label>
+            {{-- image upload --}}
+            <div class="mb-3">
+              <label for="formFile" class="block mb-1 text-sm font-medium text-white">Upload product image</label>
+              <input class="form-control text-white bg-dark border-0" value="{{product.image}}" name="image" type="file"
+                id="formFile">
+              <p class="mt-2 text-sm text-white">Note. uploading new image would replace the old image of this product
+              </p>
+              @if(flashMessages.has('errors.image'))
+              <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.image')}}</p>
+              @endif
+            </div>
+            <input type="submit" class="w-full py-3 mt-3 btn btn-primary hover:bg-purple-600 border-0"
+              value="Update product" />
+          </form>
+        </div>
+        <div class="modal-footer bg-gray-800 border-0">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
     </div>
   </div>
 </section>

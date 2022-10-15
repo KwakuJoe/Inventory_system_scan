@@ -15,8 +15,10 @@ export default class SearchController {
       .where('name', 'LIKE', '%' + params.term + '%')
       .preload('collection')
 
-    const collections = await Collection.query().where('name', 'LIKE', '%' + params.term + '%')
+    const collections = await Collection.query().where('name', 'LIKE', '%' + params.term + '%').preload('expiryCategory')
     let appUrl = Env.get('APP_URL')
+
+
 
 
     // .preload('products')

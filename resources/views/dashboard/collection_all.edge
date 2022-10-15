@@ -126,7 +126,7 @@
           @endeach --}}
         </div>
         @else
-        <div class="flex flex-row items-center justify-center p-3 mt-3 rounded gap-x-2 bg-slate-100">
+        <div class="flex flex-row items-center justify-center p-3 mt-3 rounded gap-x-2 bg-gray-900">
           <div class="avatar">
             <ion-icon name="cube-outline"></ion-icon>
           </div>
@@ -135,7 +135,7 @@
         @endeach
         <nav class="mt-4 pagination" role="navigation" aria-label="pagination">
           @each(anchor in collections.getUrlsForRange(1, collections.lastPage))
-          <a href="{{ anchor.url }}" class="pagination-link bg-gray-900 text-white" aria-label="Page 5"
+          <a href="{{ anchor.url }}" class="pagination-link bg-gray-900 text-white mr-2" aria-label="Page 5"
             aria-current="page">
             {{anchor.page}}
           </a>

@@ -8,6 +8,10 @@ import ExpiryCategory from 'App/Models/ExpiryCategory'
 
 export default class DashboardController {
   public async index({ view }: HttpContextContract) {
+    // app url
+    let appUrl = Env.get('APP_URL')
+
+    // query to fetch first current 5 collection
     const collections = await Collection.query()
       .preload('expiryCategory')
       .withCount('products', (query) => {
@@ -21,42 +25,66 @@ export default class DashboardController {
       .withAggregate('batches', (query) => {
         query.sum('batch_stock').as('stockTotal')
       })
-      // .where('collection_id', collection.id)
       .orderBy('id', 'desc')
       .limit(5)
 
-    // app url
-    let appUrl = Env.get('APP_URL')
 
-    // count collection query
+    // query to count collection created
     const collectionCount = await Database.from('collections').count('* as total')
 
-    // Total items in stock from every collection
-    const stock = await Batch.query()
-      .withAggregate('batch', (query) => {
+    // query to sum all stocks under every product in every collection
+    const stock = await Product.query()
+      .withAggregate('batches', (query) => {
         query.sum('batch_stock').as('stockTotal')
       })
-      .firstOrFail()
+      .first()
+
+    var stockTotal = '0'
+
+    if (!stock) {
+      stockTotal
+    } else {
+      stockTotal = stock.$extras.stockTotal
+    }
 
     // query to fetch expiry categories
     const categories = await ExpiryCategory.query()
 
-    // query to count expiry product
+    //query to count expiry product
     const expiry = await ExpiryCategory.query()
-      .where('id', 1)
+      .where('id', 2)
       .withCount('products', (query) => {
         query.as('totalExpiry')
       })
-    .firstOrFail()
+      .first()
 
-    // query to count non-expiry
+      var expiryTotal = '0'
+
+      if (!stock) {
+        expiryTotal
+      } else {
+        expiryTotal = expiry!.$extras.totalExpiry
+      }
+
+
+
+    //query to count non-expiry
     const nonExpiry = await ExpiryCategory.query()
-      .where('id', 2)
+      .where('id', 1)
       .withCount('products', (query) => {
         query.as('totalNonExpiry')
       })
-      .firstOrFail()
+      .first()
 
+          var nonExpiryTotal = '0'
+
+      if (!stock) {
+        nonExpiryTotal
+      } else {
+        nonExpiryTotal = nonExpiry!.$extras.totalNonExpiry
+      }
+
+    // return stock
     return view.render('dashboard/dashboard', {
       collections,
       products,
@@ -64,8 +92,9 @@ export default class DashboardController {
       stock,
       appUrl,
       categories,
-      expiry,
-      nonExpiry,
+      expiryTotal,
+      nonExpiryTotal,
+      stockTotal,
     })
   }
 }

@@ -259,22 +259,18 @@
                 </div>
               </button>
               <div class="dialog dialog-sm" x-spread="dialog" x-cloak>
-                <div class="dialog-content">
-                  <div class="font-bold dialog-header ">Drop Collection
+                <div class="dialog-content bg-gray-900">
+                  <div class="font-bold dialog-header border-0">Drop Collection
                     <button type="button" class="btn btn-light btn-sm btn-icon" aria-label="Close" @click="close">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                      </svg></button>
+                      <ion-icon name="close-outline"></ion-icon></button>
                   </div>
                   <div class="dialog-body">Are you sure you want to permanently remove this collection. Note that
                     removing this collection would also permanently remove all it products. Do you wish to proceed?
                   </div>
-                  <div class="dialog-footer">
+                  <div class="dialog-footer bg-gray-800">
                     <button type="button" class="btn btn-light" @click="close">Close</button>
                     <form action="{{`/collection/${collection.id}?_method=DELETE`}}" method="POST">
-                      <button type="submit" class="ml-3 btn btn-danger">Drop collection</button>
+                      <button type="submit" class="ml-3 btn btn-danger border-0">Drop collection</button>
                     </form>
                   </div>
                 </div>

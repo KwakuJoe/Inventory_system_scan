@@ -18,7 +18,7 @@ export default class Batch extends BaseModel {
   public batchStock: number
 
   @column.dateTime()
-  public expiryDate: DateTime
+  public expiryDate?: DateTime
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -32,5 +32,5 @@ export default class Batch extends BaseModel {
   }
 
   @belongsTo(() => Product)
-  public batch: BelongsTo<typeof Product>
+  public product: BelongsTo<typeof Product>
 }

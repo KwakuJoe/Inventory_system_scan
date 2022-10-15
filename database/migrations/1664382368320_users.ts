@@ -10,6 +10,7 @@ export default class extends BaseSchema {
       table.string('pincode').notNullable()
       table.string('passcode').notNullable()
       table.string('username').nullable()
+      table.boolean('is_mobile_user').defaultTo(0).notNullable()
       table.string('brand_name').nullable()
       table.string('remember_me_token').nullable();
       /**
