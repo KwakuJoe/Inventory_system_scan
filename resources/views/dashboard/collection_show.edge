@@ -89,7 +89,8 @@
         </div>
         {{-- stock --}}
         <div class="flex flex-row items-center mr-10 basis-2/12 gap-x-2">
-          <p class="p-0 m-0 text-xl font-bold">{{product.$extras.stockTotal == null ? 0 : product.$extras.stockTotal}}</p>
+          <p class="p-0 m-0 text-xl font-bold">{{product.$extras.stockTotal == null ? 0 : product.$extras.stockTotal}}
+          </p>
           <p class="p-0 m-0 text-sm text-slate-400">Available Stock</p>
         </div>
         <div class="grow-0 shrink-0 ">
@@ -98,6 +99,15 @@
           </a>
         </div>
       </div>
+      {{-- pagination --}}
+      <nav class="mt-4 pagination" role="navigation" aria-label="pagination">
+        @each(anchor in products.getUrlsForRange(1, products.lastPage))
+        <a href="{{ anchor.url }}" class="pagination-link bg-gray-900 text-white mr-2" aria-label="Page 5"
+          aria-current="page">
+          {{anchor.page}}
+        </a>
+        @endeach
+      </nav>
       @else
       <div class="flex flex-row items-center justify-center p-3 mt-3 rounded gap-x-2 bg-gray-900">
         <div class="avatar bg-gray-800">
@@ -130,7 +140,8 @@
             <div class="flex flex-row justify-evenly">
               <ion-icon class="p-3 text-2xl text-orange-500 bg-orange-100 rounded" name="cube-outline"></ion-icon>
               <div class="flex flex-col justify-center">
-                <p class="p-0 m-0 text-2xl font-bold">{{collection.$extras.collectionStockTotal == null ? 0 : collection.$extras.collectionStockTotal}}</p>
+                <p class="p-0 m-0 text-2xl font-bold">{{collection.$extras.collectionStockTotal == null ? 0 :
+                  collection.$extras.collectionStockTotal}}</p>
                 <p class="p-0 m-0 text-sm text-slate-400">Total items</p>
               </div>
             </div>
@@ -203,11 +214,13 @@
                       method="POST">
                       <p class="text-2xl font-semibold">Update Collections</p>
                       {{-- hidden input for holding the uuid --}}
-                      <input class="hidden form-input bg-gray-800 border-0 text-white" type="number" name="id" value="{{collection.id}}">
+                      <input class="hidden form-input bg-gray-800 border-0 text-white" type="number" name="id"
+                        value="{{collection.id}}">
                       {{-- {{ csrfField() }} --}}
                       <label class="block">
                         <span class="block mb-1 text-sm font-medium text-gray-700">Collection name</span>
-                        <input class="form-input {{ (flashMessages.has('errors.name') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
+                        <input
+                          class="form-input {{ (flashMessages.has('errors.name') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
                           value="{{collection.name}}" type="text" name="name" placeholder="Samsung collection"
                           inputmode="name" required />
                         @if(flashMessages.has('errors.name'))
@@ -216,7 +229,8 @@
                       </label>
                       <label class="block">
                         <span class="block mb-1 text-sm font-medium text-gray-700">Summary</span>
-                        <input class="form-input {{ (flashMessages.has('errors.summary') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
+                        <input
+                          class="form-input {{ (flashMessages.has('errors.summary') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
                           value="{{collection.summary}}" type="text" name="summary"
                           placeholder="Eg. samsung S5, S6 to S7 and more" inputmode="email" required />
                         @if(flashMessages.has('errors.summary'))
@@ -262,7 +276,8 @@
                 <div class="dialog-content bg-gray-900">
                   <div class="font-bold dialog-header border-0">Drop Collection
                     <button type="button" class="btn btn-light btn-sm btn-icon" aria-label="Close" @click="close">
-                      <ion-icon name="close-outline"></ion-icon></button>
+                      <ion-icon name="close-outline"></ion-icon>
+                    </button>
                   </div>
                   <div class="dialog-body">Are you sure you want to permanently remove this collection. Note that
                     removing this collection would also permanently remove all it products. Do you wish to proceed?

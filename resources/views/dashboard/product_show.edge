@@ -112,19 +112,28 @@
             </div>
           </div>
           {{-- add new bactch --}}
-          <button type="button" class="btn btn-primary border-0 w-fit" data-bs-toggle="modal"
-            data-bs-target="#addBatchModalForm">
-            <div class="flex flex-row items-center justify-between">
-              <ion-icon name="cube-outline"></ion-icon>
-              <p class="ms-2">Add new batch</p>
-            </div>
-          </button>
+          <div class="flex flex-row">
+            <a type="button" href="{{route('product-finished-batches.show', {id:product.id, uuid:product.uuid})}}" class="btn text-slate-300 border-0" >
+              <div class="flex flex-row items-center">
+                <ion-icon name="server-outline"></ion-icon>
+                <p class="ms-2">Finished batches history</p>
+              </div>
+            </a>
+            <button type="button" class="btn btn-primary border-0 w-fit" data-bs-toggle="modal"
+              data-bs-target="#addBatchModalForm">
+              <div class="flex flex-row items-center justify-between">
+                <ion-icon name="cube-outline"></ion-icon>
+                <p class="ms-2">Add new batch</p>
+              </div>
+            </button>
+          </div>
         </div>
       </div>
       {{-- table list in batches --}}
+
       {{-- table --}}
       @each(batch in batches)
-      <div class="flex flex-row flex-wrap items-center justify-between p-3 rounded gap-y-4 bg-gray-900 mt-1">
+      <div class="flex flex-row flex-wrap items-center justify-between p-3 rounded gap-y-4 bg-gray-900 mt-3">
         {{-- Batch qr code --}}
         <div class="flex-none mr-4">
           <a href="{{route('batchQrCode.show', {uuid:batch.uuid})}}" class="btn border-0 view_qr_code">
@@ -183,7 +192,8 @@
                   <ion-icon name="close-outline"></ion-icon>
                 </button>
               </div>
-              <div class="dialog-body">Are you sure you want to permanently remove this batch. Note! Associated QR code would not be effective. Do you wish to proceed?</div>
+              <div class="dialog-body">Are you sure you want to permanently remove this batch. Note! Associated QR code
+                would not be effective. Do you wish to proceed?</div>
               <div class="dialog-footer bg-gray-800">
                 <button type="button" class="btn btn-light" @click="close">Close</button>
                 <form action="{{`/batch/${batch.id}?_method=DELETE`}}" method="POST">

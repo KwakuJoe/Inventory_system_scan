@@ -1,0 +1,135 @@
+@layout('layout/app')
+
+@set('title','show-product-finished-batches')
+
+@section('navbar')
+@include('../layout/partials/nav_bar.edge')
+@endsection
+
+@section('body')
+<section class="container">
+  <div class="row mt-4 justify-content-center">
+    <div class="col-10 bg-gray-800 rounded text-white p-3">
+      {{-- notification --}}
+      @if((flashMessages.has('notification')))
+      <div class="text-green-800 bg-green-100 border-1 alert alert-closable" role="alert" x-data="{ open: true }"
+        x-show.transition="open">
+        <ion-icon class="pr-3 text-2xl" name="checkmark-circle-outline"></ion-icon>
+        {{(flashMessages.get('notification'))}}
+        <button class="bg-green-100 border-0 rounded-l-none btn btn-sm alert-close" @click="open = false">
+          <ion-icon class="text-2xl" name="close-outline"></ion-icon>
+        </button>
+      </div>
+      @endif
+
+      {{-- bredcrumbs nav --}}
+      {{-- breadcrumbs --}}
+      <nav aria-label="breadcrumb ">
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a class="text-white" href="/dashboard">Dashboard</a></li>
+          <li class="breadcrumb-item"><a class="text-white"
+              href="{{route('collection.show',{uuid:product.collection.uuid})}}">{{product.collection.name}}
+              Collection</a></li>
+          <li class="breadcrumb-item " ><a class="text-white" href="{{ route('product.show', {uuid:product.uuid}) }}">{{product.name}}</a></li>
+          <li class="breadcrumb-item text-purple-500">{{product.name}} Finished batches</li>
+        </ul>
+      </nav>
+      {{-- product name and collection --}}
+      <p class="p-0 m-0 lg:text-4xl sm:text-2xl font-semibold ">{{product.name}}</p>
+      <p class="text-slate-500">{{ product.collection.name }} collection </p>
+      <p class="p-0 m-0 lg:text-xl sm:text-2xl font-semibold mt-4">Finished Batches</p>
+
+      {{-- table --}}
+      @each(batch in batches)
+      <div
+        class="flex flex-row flex-wrap items-center justify-between p-3 rounded gap-y-4 bg-gray-900 mt-3 text-slate-400">
+        {{-- Batch qr code --}}
+        <div class="flex-none mr-4">
+          <a href="{{route('batchQrCode.show', {uuid:batch.uuid})}}" class="btn border-0 view_qr_code">
+            <div class="avatar bg-gray-800">
+              <ion-icon name="qr-code-outline"></ion-icon>
+            </div>
+          </a>
+        </div>
+        {{-- batch Id --}}
+        <div class="flex flex-col mr-10 lg:basis-1/4">
+          <p class="p-0 m-0 text-base font-semibold">{{batch.uuid}}</p>
+          <p class="p-0 m- text-sm text-slate-400">Batch Id</p>
+        </div>
+
+        {{-- dateand time added --}}
+        <div class="flex flex-col mr-10 flex-none">
+          <p class="p-0 m-0 text-base font-semibold">{{batch.createdAt.toFormat('ff')}}</p>
+          {{-- https://moment.github.io/luxon/#/formatting?id=toformat date format website--}}
+          <p class="p-0 m- text-sm text-slate-400">Date added</p>
+        </div>
+
+        {{-- number of products added in this batch --}}
+        <div class="flex flex-row mr-10 flex-none items-center gap-x-2">
+          <ion-icon class="p-2 text-2xl text-orange-500 bg-gray-900 rounded" name="cube-outline"></ion-icon>
+          <p class="p-0 m-0 text-xl font-bold">{{batch.batchStock}}</p>
+        </div>
+
+        {{-- expiry or not --}}
+        <div class="flex flex-col mr-10 flex-none">
+          <p class="p-0 m-0 text-base font-bold text-slate-400 ">
+            {{product.collection.expiryCategoryId == 1 ? 'Non-expiry' : 'Expiry'}}</p>
+          <p></p>
+        </div>
+        {{-- expiry date --}}
+        <div class="flex flex-col mr-10 flex-none {{ product.collection.expiryCategoryId == 1 ? 'hidden' : ''  }}">
+          <p class="p-0 m-0 text-base text-white font-semibold">{{batch.expiryDate.toFormat('DDD')}}</p>
+          <div class="flex flex-row items-center justify-between gap-x-3">
+            <p class="p-0 m- text-sm text-slate-400">Expiry date</p>
+            <p
+              class="text-sm font-bold text-red-600 bg-gray-800 p-1 rounded {{currentDate >= batch.expiryDate.toFormat('DDD') ? '' : 'hidden' }}">
+              Expiry is due {{currentDate}}</p>
+          </div>
+        </div>
+        {{-- delete batch --}}
+        <div x-data="dialog()">
+          <button class="btn text-red-500 border-0" x-spread="trigger">
+            <div class="flex flex-row items-center">
+              <ion-icon name="trash-outline"></ion-icon>
+              <p class="ms-2">Delete</p>
+            </div>
+          </button>
+          <div class="dialog dialog-sm" x-spread="dialog" x-cloak>
+            <div class="dialog-content bg-gray-900">
+              <div class="dialog-header border-0 font-bold">Delete this batch
+                <button type="button" class="btn btn-light btn-sm btn-icon" aria-label="Close" @click="close">
+                  <ion-icon name="close-outline"></ion-icon>
+                </button>
+              </div>
+              <div class="dialog-body">Are you sure you want to permanently remove this batch. Note! Associated QR code
+                would not be effective. Do you wish to proceed?</div>
+              <div class="dialog-footer bg-gray-800">
+                <button type="button" class="btn btn-light" @click="close">Close</button>
+                <form action="{{`/batch/${batch.id}?_method=DELETE`}}" method="POST">
+                  <button type="submit" class="ml-3 btn btn-danger border-0">Drop batch</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      @else
+      <div class="flex flex-row items-center justify-center p-3 mt-3 rounded gap-x-2 bg-gray-900">
+        <div class="avatar bg-gray-800">
+          <ion-icon name="cube-outline"></ion-icon>
+        </div>
+        <p class="rounded text-slate-400">No batch added yet</p>
+      </div>
+      @endeach
+      <nav class="mt-4 pagination" role="navigation" aria-label="pagination">
+        @each(anchor in batches.getUrlsForRange(1, batches.lastPage))
+        <a href="{{ anchor.url }}" class="pagination-link bg-gray-900 text-white mr-2" aria-label="Page 5"
+          aria-current="page">
+          {{anchor.page}}
+        </a>
+        @endeach
+      </nav>
+    </div>
+  </div>
+</section>
+@endsection

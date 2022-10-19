@@ -8,11 +8,12 @@ export default class AuthController extends BaseController {
   public async login({ request, response, auth }: HttpContextContract) {
     const { username, passcode } = await request.validate(LoginValidator)
 
+
     try {
       const user = await User.query().where('username', username).where('is_mobile_user', 1).first()
 
       if (!user) {
-        return this.notFound(response, 'We could not find user with this username', [])
+        return this.sendError(response, 'Authentication failed', [])
       }
 
       const passwordVerified = await Hash.verify(user!.passcode, passcode)

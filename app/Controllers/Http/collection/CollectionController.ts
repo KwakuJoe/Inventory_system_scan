@@ -32,28 +32,21 @@ export default class CollectionController {
     return response.redirect('back')
   }
 
-
   public async update({ request, response, session }: HttpContextContract) {
     const payload = await request.validate(UpdateCollectionValidator)
     const id = payload.id
 
     const collection = await Collection.findOrFail(id)
-    collection.name = payload.name,
-
-      collection.summary = payload.summary,
-
-      collection.expiryCategoryId = payload.expiryCategoryId,
-
+    ;(collection.name = payload.name),
+      (collection.summary = payload.summary),
+      (collection.expiryCategoryId = payload.expiryCategoryId),
       await collection.save()
 
     session.flash('notification', 'Collection updated successfully')
     return response.redirect('back')
   }
 
-
-
-
-  public async showCollection({ view, params }: HttpContextContract) {
+  public async showCollection({ view, params, request }: HttpContextContract) {
     //
     const collection = await Collection.query()
       .withAggregate('batches', (query) => {
@@ -66,12 +59,17 @@ export default class CollectionController {
     let appUrl = Env.get('APP_URL')
 
     // query product under a collection with total stock of each product
+    const page = request.input('page', 1)
+    const limit = 50
     const products = await Product.query()
       .withAggregate('batches', (query) => {
         query.sum('batch_stock').as('stockTotal')
       })
       .where('collection_id', collection.id)
       .orderBy('id', 'desc')
+      .paginate(page, limit)
+
+    products.baseUrl(`/collection/${params.uuid}`)
 
     // total product under this collection
     const totalProduct = await Collection.query()
@@ -85,7 +83,9 @@ export default class CollectionController {
     const expiryCategories = await ExpiryCategory.query()
 
     // query the category where this collection belongs to
-    const collectionCategory = await ExpiryCategory.query().where('id', collection.expiryCategoryId).first()
+    const collectionCategory = await ExpiryCategory.query()
+      .where('id', collection.expiryCategoryId)
+      .first()
     return view.render('dashboard/collection_show', {
       collection,
       products,
@@ -94,7 +94,6 @@ export default class CollectionController {
       expiryCategories,
       collectionCategory,
     })
-
   }
 
   public async destroy({ params, session, response }: HttpContextContract) {

@@ -70,6 +70,10 @@ Route.group(() => {
       'edit',
     ])
     Route.get('/product/:uuid', 'product/ProductController.showProduct').as('product.show')
+    Route.get(
+      '/product/finished-batches/:id/:uuid',
+      'product/ProductController.showProductBatchHistory'
+    ).as('product-finished-batches.show')
     Route.get('/products/all/:page?', 'product/ProductController.index').as('product.index')
     Route.post('/product/update', 'product/ProductController.update').as('product.update')
     Route.post('/product/:id', 'product/ProductController.destroy')
@@ -85,7 +89,7 @@ Route.group(() => {
       'edit',
     ])
     Route.post('/batch/:id', 'batch/BatchController.destroy')
-    Route.get('/product-show-qrCode/:uuid', 'batch/BatchController.showBatchQRCode').as(
+    Route.get('/batch-show-qrCode/:uuid', 'batch/BatchController.showBatchQRCode').as(
       'batchQrCode.show'
     )
   }).middleware('auth')

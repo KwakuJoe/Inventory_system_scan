@@ -9,4 +9,6 @@ Route.group(() => {
 
   // dashboard sumaru routes
   Route.get('/get-collections', 'api/DashboardController.getCollection')
+  Route.get('/get-products/:collectionId', 'api/DashboardController.getProducts')
+  Route.get('/get-product/:id', 'api/DashboardController.getProduct')
 }).prefix('api')

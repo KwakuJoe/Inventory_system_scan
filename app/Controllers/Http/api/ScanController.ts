@@ -34,10 +34,12 @@ export default class ScanController extends BaseController {
 
       const collection = await Collection.query().where('id', product!.collectionId).first()
 
+      const collectionName = collection!.name
+
       return this.sendResponse(response, 'Product scan successfully', {
         batch,
         stockTotal,
-        collection,
+        collectionName,
       })
     } catch (error) {
       return this.sendError(response, error.message, [])
@@ -53,6 +55,7 @@ export default class ScanController extends BaseController {
     try {
       const batch = await Batch.query()
         .where('uuid', params.uuid)
+        .where('batch_stock', '>', 0)
         .decrement('batch_stock', 1)
         .preload('product')
         .first()
@@ -62,8 +65,14 @@ export default class ScanController extends BaseController {
       }
 
       const getBatch = await Batch.query().where('uuid', params.uuid).first()
-      const batchIdPid = getBatch!.productId
+      const batchUUID = getBatch!.uuid
+      const batchStock = getBatch!.batchStock
+      const batchExpiry = getBatch!.expiryDate
+
+
+
       // use the batch id to get the product it belongs to and count all the batch under it
+      const batchIdPid = getBatch!.productId
       const product = await Product.query()
         .withAggregate('batches', (query) => {
           query.sum('batch_stock').as('stockTotal')
@@ -71,6 +80,9 @@ export default class ScanController extends BaseController {
         .where('id', batchIdPid)
         .preload('collection')
         .first()
+
+      const productName = product!.name
+      const productPrice = product!.price
 
       var stockTotal = 0
       if (product!.$extras.stockTotal == null) {
@@ -80,15 +92,19 @@ export default class ScanController extends BaseController {
       }
 
       // user the id to ge the collection
-
       const collection = await Collection.query().where('id', product!.collectionId).first()
+      const collectionName = collection!.name
+      const collectionID = collection!.id
 
       return this.sendResponse(response, 'Product Sold successfully', {
-        batch,
-        product,
-        collection,
+        productName,
+        productPrice,
+        collectionName,
+        collectionID,
         stockTotal,
-        getBatch,
+        batchUUID,
+        batchStock,
+        batchExpiry,
       })
     } catch (error) {
       return this.sendError(response, error.message, [])

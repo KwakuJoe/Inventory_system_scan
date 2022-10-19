@@ -33,24 +33,25 @@ export default class ProductController {
   }
 
   public async showProduct({ params, view, request }: HttpContextContract) {
+    let appUrl = Env.get('APP_URL')
+
     // query product and collection info
     const product = await Product.query()
       .where('uuid', params.uuid)
       .preload('collection')
       .firstOrFail()
-    let appUrl = Env.get('APP_URL')
-
-
 
     // query the batch list under the product
     const page = request.input('page', 1)
     const limit = 50
-    const batches = await Batch.query()
-      .preload('product')
-      .where('product_id', product.id)
-      .orderBy('id', 'desc')
-      .paginate(page, limit)
 
+
+      const batches = await Batch.query()
+        .preload('product')
+        .where('product_id', product.id)
+        .where('batch_stock', '>', 0)
+        .orderBy('id', 'desc')
+        .paginate(page, limit)
       batches.baseUrl(`/product/${params.uuid}`)
 
     // stock count for every product
@@ -66,6 +67,29 @@ export default class ProductController {
 
     return view.render('dashboard/product_show', { product, appUrl, batches, stock, currentDate })
   }
+
+  public async showProductBatchHistory({ params, view, request }: HttpContextContract) {
+    // query the batch list under the product
+    const page = request.input('page', 1)
+    const limit = 50
+    const batches = await Batch.query()
+      .preload('product')
+      .where('product_id', params.id)
+      .where('batch_stock', '<', 1)
+      .orderBy('id', 'desc')
+      .paginate(page, limit)
+
+    batches.baseUrl(`/product/finished-batches/${params.id}/${params.uuid}`)
+
+    // query product and collection info
+    const product = await Product.query()
+      .where('uuid', params.uuid)
+      .preload('collection')
+      .firstOrFail()
+
+    return view.render('dashboard/product_show_finished_batches', { batches, product })
+  }
+
 
   public async store({ request, response, session }: HttpContextContract) {
     const payload = await request.validate(CreateProductValidator)
@@ -108,7 +132,7 @@ export default class ProductController {
     }
 
     product!.name = payload.name
-    product!.price = payload.price, await product!.save()
+    ;(product!.price = payload.price), await product!.save()
     session.flash('notification', 'Podcast Updated Successfully')
 
     return response.redirect('back')
@@ -119,7 +143,7 @@ export default class ProductController {
     const product = await Product.findOrFail(params.id)
     const collection = await Collection.query().where('id', product.id).first()
 
-    const collectionUUID = collection!.uuid;
+    const collectionUUID = collection!.uuid
     await product.delete()
     session.flash('notification', 'Product Deleted Successfully')
     response.redirect(`/collection/${collectionUUID}`)
