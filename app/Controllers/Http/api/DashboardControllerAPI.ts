@@ -3,7 +3,8 @@ import Collection from 'App/Models/Collection'
 import Product from 'App/Models/Product'
 import BaseController from '../base/BaseController'
 
-export default class DashboardController extends BaseController {
+export default class DashboardControllerAPI extends BaseController {
+
   public async getCollection({ response }: HttpContextContract) {
     try {
       const collections = await Collection.query().preload('expiryCategory').orderBy('id', 'desc')

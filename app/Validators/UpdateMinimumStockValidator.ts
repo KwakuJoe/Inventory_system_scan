@@ -1,7 +1,7 @@
-import { schema, rules, CustomMessages } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class SetupAuthValidator {
+export default class UpdateMinimumStockValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -24,15 +24,7 @@ export default class SetupAuthValidator {
    *    ```
    */
   public schema = schema.create({
-    pincode: schema.string([
-      rules.maxLength(4),
-      rules.minLength(4),
-      rules.unique({ table: 'users', column: 'pincode' }),
-    ]),
-    passcode: schema.string({}, [rules.minLength(8), rules.confirmed('passcodeConfirmation')]),
-    username: schema.string({}),
-    brandName: schema.string({}),
-    minimumStockNumber: schema.number(),
+    minimumStockNumber:schema.number()
   })
 
   /**
@@ -47,8 +39,6 @@ export default class SetupAuthValidator {
    *
    */
   public messages: CustomMessages = {
-    'required': 'The {{ field }} is required to create a new account',
-    'pincode.minLength': 'Pincode must be exactly 4 digits. Eg. 5436',
-    'pincode.maxLength': 'Pincode must be exactly 4 digits. Eg. 5436',
+    'required':'This field is required to update minimum stock number'
   }
 }

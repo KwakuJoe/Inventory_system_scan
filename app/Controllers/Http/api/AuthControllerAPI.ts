@@ -4,7 +4,7 @@ import Hash from '@ioc:Adonis/Core/Hash'
 import LoginValidator from 'App/Validators/LoginValidator'
 import BaseController from '../base/BaseController'
 
-export default class AuthController extends BaseController {
+export default class AuthControllerAPI extends BaseController {
   public async login({ request, response, auth }: HttpContextContract) {
     const { username, passcode } = await request.validate(LoginValidator)
 

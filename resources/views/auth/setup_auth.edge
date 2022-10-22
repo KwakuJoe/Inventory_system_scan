@@ -5,7 +5,7 @@
 @section('body')
 <section class="container h-screen">
   <div class="row justify-content-center">
-    <div class="p-16 mt-10 bg-gray-800 text-white rounded col-sm-12 col-md-12 col-lg-8">
+    <div class="p-16 mt-10 text-white bg-gray-800 rounded col-sm-12 col-md-12 col-lg-9">
       {{-- notification --}}
       @if(flashMessages.get('notification'))
       <div class="text-green-800 bg-green-100 border-1 alert alert-closable" role="alert" x-data="{ open: true }"
@@ -24,12 +24,13 @@
             passcode will be neede for loggin in into your acount.</p>
           <div class="flex-col p-4 mt-4 bg-gray-900 rounded ">
             <p class="mb-2 text-white"><strong>Username- </strong>to identify the user</p>
+            <p class="mb-2 text-white"><strong>Pincode- </strong>is a four digit numbers that you need to generate
+                          new password when password is forgotten.
+                        </p>
+            <p class="mb-2 text-white"><strong>Brand Name- </strong>will be shop/company identity</p>
+            <p class="mb-2 text-white"><strong>Minimum stock- </strong>will the minimum total stock of a product. Product would be labelled as low stock if minimum stock is reached.</p>
             <p class="mb-2 text-white"><strong>Passcode- </strong>will be used by the user for logging into the
               dashboard. </p>
-            <p class="mb-2 text-white"><strong>Pincode- </strong>is a four digit numbers that you need to generate
-              new password when password is forgotten.
-            </p>
-            <p class="text-white"><strong>Brand Name- </strong>will be shop/company identity</p>
             <p></p>
           </div>
         </div>
@@ -39,7 +40,8 @@
             {{-- {{ csrfField() }} --}}
             <label class="block">
               <span class="block mb-1 text-sm font-medium">Username</span>
-              <input class="form-input {{ (flashMessages.has('errors.username') ? 'border-red-600' : '') }} bg-gray-900 border-0 text-white"
+              <input
+                class="form-input {{ (flashMessages.has('errors.username') ? 'border-red-600' : '') }} bg-gray-900 border-0 text-white"
                 value="{{flashMessages.get('username','') ?? ''}}" type="text" name="username" placeholder="john_doe"
                 inputmode="username" />
               @if(flashMessages.has('errors.username'))
@@ -48,7 +50,8 @@
             </label>
             <label class="block">
               <span class="block mb-1 text-sm font-medium">Pincode</span>
-              <input class="form-input {{ (flashMessages.has('errors.pincode') ? 'border-red-600' : '') }} bg-gray-900 border-0 text-white"
+              <input
+                class="form-input {{ (flashMessages.has('errors.pincode') ? 'border-red-600' : '') }} bg-gray-900 border-0 text-white"
                 value="{{flashMessages.get('pincode','') ?? ''}}" type="number" name="pincode" placeholder="Eg 8754"
                 inputmode="email" />
               @if(flashMessages.has('errors.pincode'))
@@ -57,7 +60,8 @@
             </label>
             <label class="block">
               <span class="block mb-1 text-sm font-medium ">Brand/Compnay/Shop name</span>
-              <input class="form-input {{ (flashMessages.has('errors.brandName') ? 'border-red-600' : '') }} bg-gray-900 border-0 text-white"
+              <input
+                class="form-input {{ (flashMessages.has('errors.brandName') ? 'border-red-600' : '') }} bg-gray-900 border-0 text-white"
                 value="{{flashMessages.get('brandName','') ?? ''}}" type="text" name="brandName"
                 placeholder="Eg Shopit Company Limited" />
               @if(flashMessages.has('errors.brandName'))
@@ -65,8 +69,19 @@
               @endif
             </label>
             <label class="block">
+              <span class="block mb-1 text-sm font-medium ">Set minimum stock number</span>
+              <input
+                class="form-input {{ (flashMessages.has('errors.minimumStockNumber') ? 'border-red-600' : '') }} bg-gray-900 border-0 text-white"
+                value="{{flashMessages.get('minimumStockNumber','') ?? ''}}" type="number" name="minimumStockNumber"
+                placeholder="Eg Shopit Company Limited" />
+              @if(flashMessages.has('errors.minimumStockNumber'))
+              <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.minimumStockNumber')}}</p>
+              @endif
+            </label>
+            <label class="block">
               <span class="block mb-1 text-sm font-medium ">Enter your passcode</span>
-              <input class="form-input {{ (flashMessages.has('errors.passcode') ? 'border-red-600' : '') }} bg-gray-900 border-0 text-white"
+              <input
+                class="form-input {{ (flashMessages.has('errors.passcode') ? 'border-red-600' : '') }} bg-gray-900 border-0 text-white"
                 value="{{flashMessages.get('passcode','') ?? ''}}" type="password" name="passcode"
                 placeholder="Eg 3FrankoGh74744" />
               @if(flashMessages.has('errors.passcode'))
@@ -74,19 +89,24 @@
               @endif
             </label>
             <label class="block">
-              <span class="block mb-1 text-sm font-medium">Enter your passcode</span>
-              <input class="form-input {{ (flashMessages.has('errors.passcodeConfirmation') ? 'border-red-600' : '') }} bg-gray-900 border-0 text-white"
+              <span class="block mb-1 text-sm font-medium">Confirm passcode</span>
+              <input
+                class="form-input {{ (flashMessages.has('errors.passcodeConfirmation') ? 'border-red-600' : '') }} bg-gray-900 border-0 text-white"
                 value="{{flashMessages.get('passcodeConfirmation','') ?? ''}}" type="password"
                 name="passcodeConfirmation" placeholder="Eg 3FrankoGh74744" />
               @if(flashMessages.has('errors.passcodeConfirmation'))
               <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.passcodeConfirmation')}}</p>
               @endif
             </label>
-            <input type="submit" class="w-full py-3 mt-3 btn btn-primary hover:bg-purple-600" value="Proceed" />
+            <input type="submit" class="w-full py-3 mt-3 border-0 btn btn-primary hover:bg-purple-600"
+              value="Proceed" />
           </form>
         </div>
       </div>
     </div>
+    <p class="mt-3 mb-4 text-xs text-center text-gray-400">
+      <a href="/" class="text-gray-600 underline hover:text-purple-600">Login here</a>
+    </p>
   </div>
 </section>
 @endsection

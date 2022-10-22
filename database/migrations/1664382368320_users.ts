@@ -10,9 +10,10 @@ export default class extends BaseSchema {
       table.string('pincode').notNullable()
       table.string('passcode').notNullable()
       table.string('username').nullable()
+      table.integer('minimum_stock_number').defaultTo(20).notNullable()
       table.boolean('is_mobile_user').defaultTo(0).notNullable()
       table.string('brand_name').nullable()
-      table.string('remember_me_token').nullable();
+      table.string('remember_me_token').nullable()
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

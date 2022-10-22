@@ -22,6 +22,9 @@ export default class User extends BaseModel {
   public brandName: string
 
   @column()
+  public minimumStockNumber: number
+
+  @column()
   public isMobileUser: boolean
 
   @column()

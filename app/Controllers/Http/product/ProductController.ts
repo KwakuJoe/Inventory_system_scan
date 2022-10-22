@@ -8,6 +8,7 @@ import Batch from 'App/Models/Batch'
 import { DateTime } from 'luxon'
 import UpdateProductValidator from 'App/Validators/UpdateProductValidator'
 import Collection from 'App/Models/Collection'
+import UpdateMinimumStockValidator from 'App/Validators/UpdateMinimumStockValidator'
 
 export default class ProductController {
   public async index({ view, request }: HttpContextContract) {
@@ -32,6 +33,42 @@ export default class ProductController {
     return view.render('dashboard/product_all', { products, appUrl })
   }
 
+  public async lowStockProduct({ view, request, auth }: HttpContextContract) {
+    const page = request.input('page', 1)
+    const limit = 50
+
+    const minimumStockNumber = auth.user!.minimumStockNumber
+
+    // query product under a collection with total stock of each product
+    const products = await Product.query()
+      .withAggregate('batches', (query) => {
+        query.sum('batch_stock').as('stockTotal')
+      })
+      .preload('collection')
+      .orderBy('id', 'desc')
+      .paginate(page, limit)
+
+    const appUrl = Env.get('APP_URL')
+    // Changes the baseURL for the pagination links
+    products.baseUrl('/products/low-stock')
+    return view.render('dashboard/low_stock_products', { products, appUrl, minimumStockNumber })
+  }
+
+  //  update minimum stock number
+  public async updateMinimumStockNumber({ session, response, request, auth }: HttpContextContract) {
+    const payload = await request.validate(UpdateMinimumStockValidator)
+
+    const user = auth.user
+
+    user!.minimumStockNumber = payload.minimumStockNumber
+
+    user!.save()
+
+    session.flash('notification', 'Minimum stock number updated successfully')
+
+    return response.redirect('back')
+  }
+
   public async showProduct({ params, view, request }: HttpContextContract) {
     let appUrl = Env.get('APP_URL')
 
@@ -45,14 +82,13 @@ export default class ProductController {
     const page = request.input('page', 1)
     const limit = 50
 
-
-      const batches = await Batch.query()
-        .preload('product')
-        .where('product_id', product.id)
-        .where('batch_stock', '>', 0)
-        .orderBy('id', 'desc')
-        .paginate(page, limit)
-      batches.baseUrl(`/product/${params.uuid}`)
+    const batches = await Batch.query()
+      .preload('product')
+      .where('product_id', product.id)
+      .where('batch_stock', '>', 0)
+      .orderBy('id', 'desc')
+      .paginate(page, limit)
+    batches.baseUrl(`/product/${params.uuid}`)
 
     // stock count for every product
     const stock = await Product.query()
@@ -89,7 +125,6 @@ export default class ProductController {
 
     return view.render('dashboard/product_show_finished_batches', { batches, product })
   }
-
 
   public async store({ request, response, session }: HttpContextContract) {
     const payload = await request.validate(CreateProductValidator)

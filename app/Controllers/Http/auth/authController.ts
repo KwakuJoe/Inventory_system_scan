@@ -1,27 +1,55 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
 import LoginValidator from 'App/Validators/LoginValidator'
-import SetupAuthValidator from 'App/Validators/SetupAuthValidator'
 import Hash from '@ioc:Adonis/Core/Hash'
+import SetupAuthValidator from 'App/Validators/SetupAuthValidator'
+import PasswordResetValidator from 'App/Validators/PasswordResetValidator'
 
 export default class AuthController {
+  // show login
   public async showLogin({ view }: HttpContextContract) {
     return view.render('auth/login')
   }
 
+  // show setup
   public async showSetupAuth({ view }: HttpContextContract) {
     return view.render('auth/setup_auth')
   }
 
-  public async setupAuth({ request, response, session, auth }: HttpContextContract) {
-    try {
-      const validatedData = await request.validate(SetupAuthValidator)
+  public async showPasswordReset({ view }: HttpContextContract) {
+    return view.render('auth/password_reset')
+  }
 
+  public async resetPassword({ request, response, session }: HttpContextContract) {
+    const payload = await request.validate(PasswordResetValidator)
+    const pincode = payload.pincode
+    const passcode = payload.passcode
+    const user = await User.query().where('pincode', pincode).first()
+
+    if (!user) {
+    session.flash('error', 'Passcode reset failed, Cannot find user with that pincode, try again')
+    return response.redirect('back')
+    }
+
+    user!.passcode = passcode
+
+    user.save()
+
+    session.flash('notification', 'Passcode reset successfully, Login with new passcode')
+    return response.redirect('back')
+
+  }
+
+  public async setupAuth({ request, response, session, auth }: HttpContextContract) {
+    const validatedData = await request.validate(SetupAuthValidator)
+
+    try {
       const user = await User.create({
         username: validatedData.username,
         pincode: validatedData.pincode,
         brandName: validatedData.brandName,
         passcode: validatedData.passcode,
+        minimumStockNumber: validatedData.minimumStockNumber
       })
 
       await auth.login(user)
@@ -41,6 +69,7 @@ export default class AuthController {
     return response.redirect('back')
   }
 
+  // login
   public async login({ request, session, response, auth }: HttpContextContract) {
     const { username, passcode, remember } = await request.validate(LoginValidator)
 
@@ -73,6 +102,8 @@ export default class AuthController {
     session.flash('notification', `Welcome ${user!.username}`)
     return response.redirect('/dashboard')
   }
+
+  // logout
 
   public async logout({ auth, response }: HttpContextContract) {
     await auth.logout()

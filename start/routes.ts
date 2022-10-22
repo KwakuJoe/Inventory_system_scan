@@ -30,6 +30,8 @@ Route.group(() => {
       Route.get('/auth-setup', 'authController.showSetupAuth')
       Route.post('/register', 'authController.setupAuth')
       Route.post('/login', 'authController.login')
+      Route.get('/reset-password', 'authController.showPasswordReset')
+      Route.post('/reset-password', 'authController.resetPassword')
     }).middleware('guest')
 
     Route.post('/logout', 'AuthController.logout')
@@ -44,7 +46,7 @@ Route.group(() => {
 
   // collections
   Route.group(() => {
-    Route.resource('collections', 'collection/CollectionController').except([
+    Route.resource('/collections', 'collection/CollectionController').except([
       'show',
       'index',
       'update',
@@ -75,6 +77,10 @@ Route.group(() => {
       'product/ProductController.showProductBatchHistory'
     ).as('product-finished-batches.show')
     Route.get('/products/all/:page?', 'product/ProductController.index').as('product.index')
+    Route.get('/products/low-stock/:page?', 'product/ProductController.lowStockProduct').as(
+      'product.low-stock'
+    )
+    Route.post('/update-minimum-stock-number', 'product/ProductController.updateMinimumStockNumber')
     Route.post('/product/update', 'product/ProductController.update').as('product.update')
     Route.post('/product/:id', 'product/ProductController.destroy')
   }).middleware('auth')

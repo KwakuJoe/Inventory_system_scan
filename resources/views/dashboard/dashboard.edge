@@ -45,7 +45,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
-                        {{--  Add colection form   --}}
+                        {{-- Add colection form --}}
                         <form class="mb-8 mt-2 space-y-4 px-2" action="/collections" method="POST">
                           <p class="text-2xl font-semibold">Create Collections</p>
                           {{-- {{ csrfField() }} --}}
@@ -53,8 +53,8 @@
                             <span class="block mb-1 text-sm font-medium text-white">Collection name</span>
                             <input
                               class="form-input {{ (flashMessages.has('errors.name') ? 'border-red-600' : '') }} bg-gray-800 border-0 text-white"
-                              value="{{flashMessages.get('name','') ?? ''}}" type="text" name="name" placeholder="Samsung collection"
-                              inputmode="name" required />
+                              value="{{flashMessages.get('name','') ?? ''}}" type="text" name="name"
+                              placeholder="Samsung collection" inputmode="name" required />
                             @if(flashMessages.has('errors.name'))
                             <p class="mt-2 text-sm text-red-600">{{flashMessages.get('errors.name')}}</p>
                             @endif
@@ -124,8 +124,13 @@
               <p class="p-0 m-0 text-sm text-slate-400">Products</p>
             </div>
             <div class="grow-0 shrink-0 ">
-              <a href="{{route('collection.show', {uuid:collection.uuid})}}" class="p-1 bg-gray-900 rounded ">
-                <ion-icon name="eye-outline"></ion-icon>
+
+              <a type="button" href="{{route('collection.show', {uuid:collection.uuid})}}"
+                class="btn text-slate-300 border-0">
+                <div class="flex flex-row items-center">
+                  <ion-icon name="eye-outline"></ion-icon>
+                  <p class="ms-2">View</p>
+                </div>
               </a>
             </div>
           </div>
@@ -199,8 +204,12 @@
               <p class="p-0 m-0 text-sm text-slate-400">Available Stock</p>
             </div>
             <div class="grow-0 shrink-0 ">
-              <a href="{{route('product.show', {uuid:product.uuid})}}" class="p-1 bg-gray-800 rounded ">
-                <ion-icon name="eye-outline"></ion-icon>
+              <a type="button" href="{{route('product.show', {uuid:product.uuid})}}"
+                class="btn text-slate-300 border-0">
+                <div class="flex flex-row items-center">
+                  <ion-icon name="eye-outline"></ion-icon>
+                  <p class="ms-2">View</p>
+                </div>
               </a>
             </div>
           </div>
